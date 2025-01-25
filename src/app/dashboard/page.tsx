@@ -13,6 +13,16 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Briefcase, Users } from 'lucide-react'
+import StatCard from '@/components/stat-card'
 
 export default function Page() {
   return (
@@ -32,19 +42,32 @@ export default function Page() {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                  <BreadcrumbPage>Dashboard</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
+        <div className="flex flex-col gap-4">
+          <div className="px-4 text-2xl font-bold">
+            <h1>Selamat Datang, lorem</h1>
           </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+            <div className="grid grid-cols-1 gap-2">
+              <StatCard
+                icon={<Users className="size-8" />}
+                bgColor="bg-blue-500"
+                count={20}
+                label="Karyawan"
+              />
+              <StatCard
+                icon={<Briefcase className="size-8" />}
+                bgColor="bg-green-500"
+                count={2}
+                label="Kantor"
+              />
+            </div>
+          </div>
         </div>
       </SidebarInset>
     </SidebarProvider>
