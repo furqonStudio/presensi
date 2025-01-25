@@ -5,7 +5,7 @@ import React from 'react'
 const KaryawanPage = () => {
   return (
     <Container>
-      <h2 className="font-bold text-xl">Daftar Karyawan</h2>
+      <h2 className="text-xl font-bold">Daftar Karyawan</h2>
       <KaryawanTable />
     </Container>
   )
