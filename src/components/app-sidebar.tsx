@@ -1,7 +1,14 @@
 'use client'
 
 import * as React from 'react'
-import { GalleryVerticalEnd, SquareTerminal } from 'lucide-react'
+import {
+  Building2,
+  Clock,
+  GalleryVerticalEnd,
+  House,
+  SquareTerminal,
+  User,
+} from 'lucide-react'
 
 import { NavMain } from '@/components/nav-main'
 import { NavUser } from '@/components/nav-user'
@@ -26,29 +33,37 @@ const data = {
   },
   navMain: [
     {
-      title: 'Playground',
+      title: 'Dashboard',
+      url: '/',
+      icon: House,
+      isActive: false,
+    },
+    {
+      title: 'Karyawan',
+      url: '/karyawan',
+      icon: User,
+      isActive: false,
+    },
+    {
+      title: 'Data',
       url: '#',
-      icon: SquareTerminal,
+      icon: Clock,
       isActive: true,
       items: [
         {
-          title: 'History',
+          title: 'Shift',
           url: '#',
         },
         {
-          title: 'Starred',
-          url: '#',
-        },
-        {
-          title: 'Settings',
+          title: 'Lokasi',
           url: '#',
         },
       ],
     },
     {
-      title: 'Profile',
+      title: 'Perusahaan',
       url: '#',
-      icon: SquareTerminal,
+      icon: Building2,
       isActive: false,
     },
   ],
