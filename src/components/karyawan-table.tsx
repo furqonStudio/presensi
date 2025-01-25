@@ -41,48 +41,134 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { DataTablePagination } from "./data-table-pagination";
 
-const data: Payment[] = [
+const data: Karyawan[] = [
+  { id: "k1", name: "John Doe", jabatan: "Manager", kontak: "08123456789" },
+  { id: "k2", name: "Jane Smith", jabatan: "Developer", kontak: "08234567890" },
   {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
+    id: "k3",
+    name: "Samuel Green",
+    jabatan: "Designer",
+    kontak: "08345678901",
+  },
+  { id: "k4", name: "Maria White", jabatan: "HR", kontak: "08456789012" },
+  { id: "k5", name: "Peter Brown", jabatan: "Support", kontak: "08567890123" },
+  {
+    id: "k6",
+    name: "Michael Johnson",
+    jabatan: "Project Manager",
+    kontak: "08678901234",
   },
   {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
+    id: "k7",
+    name: "Emily Davis",
+    jabatan: "Developer",
+    kontak: "08789012345",
+  },
+  { id: "k8", name: "David Clark", jabatan: "Designer", kontak: "08890123456" },
+  { id: "k9", name: "Sophia Lee", jabatan: "HR", kontak: "08901234567" },
+  { id: "k10", name: "James White", jabatan: "Support", kontak: "09012345678" },
+  {
+    id: "k11",
+    name: "Olivia Harris",
+    jabatan: "Marketing",
+    kontak: "09123456789",
   },
   {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
+    id: "k12",
+    name: "William Martinez",
+    jabatan: "Developer",
+    kontak: "09234567890",
   },
   {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
+    id: "k13",
+    name: "Isabella Robinson",
+    jabatan: "Manager",
+    kontak: "09345678901",
   },
   {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
+    id: "k14",
+    name: "Ethan Walker",
+    jabatan: "Designer",
+    kontak: "09456789012",
   },
+  { id: "k15", name: "Charlotte Young", jabatan: "HR", kontak: "09567890123" },
+  { id: "k16", name: "Henry King", jabatan: "Support", kontak: "09678901234" },
+  {
+    id: "k17",
+    name: "Amelia Scott",
+    jabatan: "Developer",
+    kontak: "09789012345",
+  },
+  {
+    id: "k18",
+    name: "Liam Thomas",
+    jabatan: "Project Manager",
+    kontak: "09890123456",
+  },
+  {
+    id: "k19",
+    name: "Mason Green",
+    jabatan: "Designer",
+    kontak: "09901234567",
+  },
+  { id: "k20", name: "Harper Allen", jabatan: "HR", kontak: "10012345678" },
+  { id: "k21", name: "Avery Adams", jabatan: "Support", kontak: "10123456789" },
+  {
+    id: "k22",
+    name: "Elijah Nelson",
+    jabatan: "Marketing",
+    kontak: "10234567890",
+  },
+  {
+    id: "k23",
+    name: "Grace Carter",
+    jabatan: "Developer",
+    kontak: "10345678901",
+  },
+  {
+    id: "k24",
+    name: "Sebastian Mitchell",
+    jabatan: "Manager",
+    kontak: "10456789012",
+  },
+  {
+    id: "k25",
+    name: "Victoria Perez",
+    jabatan: "Designer",
+    kontak: "10567890123",
+  },
+  { id: "k26", name: "Benjamin Moore", jabatan: "HR", kontak: "10678901234" },
+  {
+    id: "k27",
+    name: "Mila Jackson",
+    jabatan: "Support",
+    kontak: "10789012345",
+  },
+  {
+    id: "k28",
+    name: "James Harris",
+    jabatan: "Project Manager",
+    kontak: "10890123456",
+  },
+  {
+    id: "k29",
+    name: "Zoe Martinez",
+    jabatan: "Designer",
+    kontak: "10901234567",
+  },
+  { id: "k30", name: "Lucas Lee", jabatan: "Developer", kontak: "11012345678" },
 ];
 
-export type Payment = {
+export type Karyawan = {
   id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
+  name: string;
+  jabatan: string;
+  kontak: string;
 };
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<Karyawan>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -106,47 +192,33 @@ export const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+    accessorKey: "name",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Nama
+        <ArrowUpDown />
+      </Button>
     ),
+    cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
   {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown />
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    accessorKey: "jabatan",
+    header: "Jabatan",
+    cell: ({ row }) => <div>{row.getValue("jabatan")}</div>,
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
+    accessorKey: "kontak",
+    header: "Kontak",
+    cell: ({ row }) => <div>{row.getValue("kontak")}</div>,
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const karyawan = row.original;
 
       return (
         <DropdownMenu>
@@ -157,15 +229,8 @@ export const columns: ColumnDef<Payment>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuLabel>Edit</DropdownMenuLabel>
+            <DropdownMenuItem>Hapus</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -206,10 +271,10 @@ export function KaryawanTable() {
       <div className="flex flex-col gap-2 py-4">
         <div className="flex">
           <Input
-            placeholder="Filter emails..."
-            value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+            placeholder="Filter names..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("email")?.setFilterValue(event.target.value)
+              table.getColumn("name")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
@@ -296,29 +361,8 @@ export function KaryawanTable() {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+      <div className="mt-4">
+        <DataTablePagination table={table} />
       </div>
     </div>
   );
