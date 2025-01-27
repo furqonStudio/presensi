@@ -13,10 +13,11 @@ import {
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { Container } from '@/components/container'
+import Link from 'next/link'
 
 export default function AddEmployeeForm() {
   const [formData, setFormData] = useState({
-    name: '',
+    nama: '',
     contact: '',
     position: '',
     joinDate: new Date(),
@@ -51,6 +52,7 @@ export default function AddEmployeeForm() {
 
   return (
     <Container>
+      <h2 className="text-xl font-bold">Tambah Karyawan</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Nama */}
         <div>
@@ -125,9 +127,14 @@ export default function AddEmployeeForm() {
         </div>
 
         {/* Tombol Submit */}
-        <Button type="submit" disabled={isSubmitting} className="w-full">
-          {isSubmitting ? 'Menambahkan...' : 'Tambah Karyawan'}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant={'secondary'} className="w-full">
+            <Link href="/karyawan">Batal</Link>
+          </Button>
+          <Button type="submit" disabled={isSubmitting} className="w-full">
+            {isSubmitting ? 'Menambahkan...' : 'Tambah Karyawan'}
+          </Button>
+        </div>
       </form>
     </Container>
   )

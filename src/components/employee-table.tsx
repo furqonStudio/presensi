@@ -42,128 +42,129 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination } from './data-table-pagination'
+import Link from 'next/link'
 
 const data: Karyawan[] = [
-  { id: 'k1', name: 'John Doe', jabatan: 'Manager', kontak: '08123456789' },
-  { id: 'k2', name: 'Jane Smith', jabatan: 'Developer', kontak: '08234567890' },
+  { id: 'k1', nama: 'John Doe', jabatan: 'Manager', kontak: '08123456789' },
+  { id: 'k2', nama: 'Jane Smith', jabatan: 'Developer', kontak: '08234567890' },
   {
     id: 'k3',
-    name: 'Samuel Green',
+    nama: 'Samuel Green',
     jabatan: 'Designer',
     kontak: '08345678901',
   },
-  { id: 'k4', name: 'Maria White', jabatan: 'HR', kontak: '08456789012' },
-  { id: 'k5', name: 'Peter Brown', jabatan: 'Support', kontak: '08567890123' },
+  { id: 'k4', nama: 'Maria White', jabatan: 'HR', kontak: '08456789012' },
+  { id: 'k5', nama: 'Peter Brown', jabatan: 'Support', kontak: '08567890123' },
   {
     id: 'k6',
-    name: 'Michael Johnson',
+    nama: 'Michael Johnson',
     jabatan: 'Project Manager',
     kontak: '08678901234',
   },
   {
     id: 'k7',
-    name: 'Emily Davis',
+    nama: 'Emily Davis',
     jabatan: 'Developer',
     kontak: '08789012345',
   },
-  { id: 'k8', name: 'David Clark', jabatan: 'Designer', kontak: '08890123456' },
-  { id: 'k9', name: 'Sophia Lee', jabatan: 'HR', kontak: '08901234567' },
-  { id: 'k10', name: 'James White', jabatan: 'Support', kontak: '09012345678' },
+  { id: 'k8', nama: 'David Clark', jabatan: 'Designer', kontak: '08890123456' },
+  { id: 'k9', nama: 'Sophia Lee', jabatan: 'HR', kontak: '08901234567' },
+  { id: 'k10', nama: 'James White', jabatan: 'Support', kontak: '09012345678' },
   {
     id: 'k11',
-    name: 'Olivia Harris',
+    nama: 'Olivia Harris',
     jabatan: 'Marketing',
     kontak: '09123456789',
   },
   {
     id: 'k12',
-    name: 'William Martinez',
+    nama: 'William Martinez',
     jabatan: 'Developer',
     kontak: '09234567890',
   },
   {
     id: 'k13',
-    name: 'Isabella Robinson',
+    nama: 'Isabella Robinson',
     jabatan: 'Manager',
     kontak: '09345678901',
   },
   {
     id: 'k14',
-    name: 'Ethan Walker',
+    nama: 'Ethan Walker',
     jabatan: 'Designer',
     kontak: '09456789012',
   },
-  { id: 'k15', name: 'Charlotte Young', jabatan: 'HR', kontak: '09567890123' },
-  { id: 'k16', name: 'Henry King', jabatan: 'Support', kontak: '09678901234' },
+  { id: 'k15', nama: 'Charlotte Young', jabatan: 'HR', kontak: '09567890123' },
+  { id: 'k16', nama: 'Henry King', jabatan: 'Support', kontak: '09678901234' },
   {
     id: 'k17',
-    name: 'Amelia Scott',
+    nama: 'Amelia Scott',
     jabatan: 'Developer',
     kontak: '09789012345',
   },
   {
     id: 'k18',
-    name: 'Liam Thomas',
+    nama: 'Liam Thomas',
     jabatan: 'Project Manager',
     kontak: '09890123456',
   },
   {
     id: 'k19',
-    name: 'Mason Green',
+    nama: 'Mason Green',
     jabatan: 'Designer',
     kontak: '09901234567',
   },
-  { id: 'k20', name: 'Harper Allen', jabatan: 'HR', kontak: '10012345678' },
-  { id: 'k21', name: 'Avery Adams', jabatan: 'Support', kontak: '10123456789' },
+  { id: 'k20', nama: 'Harper Allen', jabatan: 'HR', kontak: '10012345678' },
+  { id: 'k21', nama: 'Avery Adams', jabatan: 'Support', kontak: '10123456789' },
   {
     id: 'k22',
-    name: 'Elijah Nelson',
+    nama: 'Elijah Nelson',
     jabatan: 'Marketing',
     kontak: '10234567890',
   },
   {
     id: 'k23',
-    name: 'Grace Carter',
+    nama: 'Grace Carter',
     jabatan: 'Developer',
     kontak: '10345678901',
   },
   {
     id: 'k24',
-    name: 'Sebastian Mitchell',
+    nama: 'Sebastian Mitchell',
     jabatan: 'Manager',
     kontak: '10456789012',
   },
   {
     id: 'k25',
-    name: 'Victoria Perez',
+    nama: 'Victoria Perez',
     jabatan: 'Designer',
     kontak: '10567890123',
   },
-  { id: 'k26', name: 'Benjamin Moore', jabatan: 'HR', kontak: '10678901234' },
+  { id: 'k26', nama: 'Benjamin Moore', jabatan: 'HR', kontak: '10678901234' },
   {
     id: 'k27',
-    name: 'Mila Jackson',
+    nama: 'Mila Jackson',
     jabatan: 'Support',
     kontak: '10789012345',
   },
   {
     id: 'k28',
-    name: 'James Harris',
+    nama: 'James Harris',
     jabatan: 'Project Manager',
     kontak: '10890123456',
   },
   {
     id: 'k29',
-    name: 'Zoe Martinez',
+    nama: 'Zoe Martinez',
     jabatan: 'Designer',
     kontak: '10901234567',
   },
-  { id: 'k30', name: 'Lucas Lee', jabatan: 'Developer', kontak: '11012345678' },
+  { id: 'k30', nama: 'Lucas Lee', jabatan: 'Developer', kontak: '11012345678' },
 ]
 
 export type Karyawan = {
   id: string
-  name: string
+  nama: string
   jabatan: string
   kontak: string
 }
@@ -192,7 +193,7 @@ export const columns: ColumnDef<Karyawan>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'nama',
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -202,7 +203,7 @@ export const columns: ColumnDef<Karyawan>[] = [
         <ArrowUpDown />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue('name')}</div>,
+    cell: ({ row }) => <div>{row.getValue('nama')}</div>,
   },
   {
     accessorKey: 'jabatan',
@@ -238,7 +239,7 @@ export const columns: ColumnDef<Karyawan>[] = [
   },
 ]
 
-export function KaryawanTable() {
+export function EmployeeTable() {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -272,9 +273,9 @@ export function KaryawanTable() {
         <div className="flex">
           <Input
             placeholder="Filter names..."
-            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+            value={(table.getColumn('nama')?.getFilterValue() as string) ?? ''}
             onChange={(event) =>
-              table.getColumn('name')?.setFilterValue(event.target.value)
+              table.getColumn('nama')?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
@@ -306,8 +307,10 @@ export function KaryawanTable() {
           </DropdownMenu>
         </div>
         <div>
-          <Button>
-            <Plus /> Tambah
+          <Button asChild>
+            <Link href="/karyawan/add">
+              <Plus /> Tambah
+            </Link>
           </Button>
         </div>
       </div>

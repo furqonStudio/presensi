@@ -1,14 +1,14 @@
 import { Container } from '@/components/container'
-import { KaryawanTable } from '@/components/karyawan-table'
+import { EmployeeTable } from '@/components/employee-table'
 import React from 'react'
 
-const KaryawanPage = () => {
+const EmployeePage = () => {
   return (
     <Container>
       <h2 className="text-xl font-bold">Daftar Karyawan</h2>
-      <KaryawanTable />
+      <EmployeeTable />
     </Container>
   )
 }
 
-export default KaryawanPage
+export default EmployeePage
