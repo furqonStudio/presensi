@@ -120,6 +120,9 @@ export const columns: ColumnDef<Employee>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <Link href={'/karyawan/1'}>
+              <DropdownMenuLabel>Lihat</DropdownMenuLabel>
+            </Link>
             <DropdownMenuLabel>Edit</DropdownMenuLabel>
             <DropdownMenuItem>Delete</DropdownMenuItem>
           </DropdownMenuContent>
@@ -198,8 +201,8 @@ export function EmployeeTable({ data }: { data: Employee[] }) {
         </div>
         <div>
           <Button asChild>
-            <Link href="/employee/add">
-              <Plus /> Add
+            <Link href="/karyawan/add">
+              <Plus /> Tambah
             </Link>
           </Button>
         </div>

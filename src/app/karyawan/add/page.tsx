@@ -1,141 +1,174 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { CalendarIcon } from 'lucide-react'
-import { Calendar } from '@/components/ui/calendar'
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import { Container } from '@/components/container'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import Link from 'next/link'
 
+// Contoh data kantor (office)
+const offices = [
+  { id: 1, name: 'Kantor A' },
+  { id: 2, name: 'Kantor B' },
+]
+
+// Define the form schema with Zod validation
+const formSchema = z.object({
+  name: z.string().min(2, {
+    message: 'Name must be at least 2 characters.',
+  }),
+  position: z.string().min(2, {
+    message: 'Position must be at least 2 characters.',
+  }),
+  contact: z.string().min(10, {
+    message: 'Contact must be at least 10 characters.',
+  }),
+  officeId: z.number().min(1, {
+    message: 'Please select a valid office.',
+  }),
+})
+
 export default function AddEmployeeForm() {
-  const [formData, setFormData] = useState({
-    nama: '',
-    contact: '',
-    position: '',
-    joinDate: new Date(),
+  const [selectedOfficeId, setSelectedOfficeId] = useState<number | null>(null)
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: '',
+      position: '',
+      contact: '',
+      officeId: selectedOfficeId,
+    },
   })
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const onSubmit = async (data: any) => {
+    // You can make an API call to save the employee data here
+    console.log(data)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
+    // Example API call:
+    // const response = await fetch('/api/employees', {
+    //   method: 'POST',
+    //   body: JSON.stringify(data),
+    //   headers: { 'Content-Type': 'application/json' }
+    // })
   }
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('id-ID', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Employee data submitted:', formData)
-      setIsSubmitting(false)
-      alert('Karyawan berhasil ditambahkan!')
-    }, 1000)
-  }
+  useEffect(() => {
+    form.setValue('officeId', selectedOfficeId as number)
+  }, [selectedOfficeId, form])
 
   return (
     <Container>
-      <h2 className="text-xl font-bold">Tambah Karyawan</h2>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Nama */}
-        <div>
-          <Label htmlFor="name">Nama</Label>
-          <Input
-            id="name"
+      <h2 className="text-xl font-bold">Daftar Karyawan</h2>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
             name="name"
-            placeholder="Masukkan nama karyawan"
-            value={formData.name}
-            onChange={handleChange}
-            required
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="John Doe" {...field} />
+                </FormControl>
+                <FormDescription>
+                  The full name of the employee.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-
-        <div>
-          <Label htmlFor="contact">Kontak</Label>
-          <Input
-            id="contact"
-            name="contact"
-            type="number"
-            placeholder="Masukkan kontak karyawan"
-            value={formData.contact}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        {/* Jabatan */}
-        <div>
-          <Label htmlFor="position">Jabatan</Label>
-          <Input
-            id="position"
+          <FormField
+            control={form.control}
             name="position"
-            placeholder="Masukkan jabatan karyawan"
-            value={formData.position}
-            onChange={handleChange}
-            required
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Position</FormLabel>
+                <FormControl>
+                  <Input placeholder="Manager" {...field} />
+                </FormControl>
+                <FormDescription>
+                  The job position of the employee.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-
-        {/* Tanggal Bergabung */}
-        <div>
-          <Label htmlFor="joinDate">Tanggal Bergabung</Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={'outline'}
-                className={cn(
-                  'w-full justify-start text-left font-normal',
-                  !formData.joinDate && 'text-muted-foreground',
-                )}
-              >
-                {formData.joinDate ? (
-                  formatDate(formData.joinDate)
-                ) : (
-                  <span>Pilih tanggal</span>
-                )}
-                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="start" className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={formData.joinDate}
-                onSelect={(date) =>
-                  setFormData({ ...formData, joinDate: date! })
-                }
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-
-        {/* Tombol Submit */}
-        <div className="flex gap-2">
-          <Button variant={'secondary'} className="w-full">
-            <Link href="/karyawan">Batal</Link>
-          </Button>
-          <Button type="submit" disabled={isSubmitting} className="w-full">
-            {isSubmitting ? 'Menambahkan...' : 'Tambah Karyawan'}
-          </Button>
-        </div>
-      </form>
+          <FormField
+            control={form.control}
+            name="contact"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Contact</FormLabel>
+                <FormControl>
+                  <Input placeholder="08123456789" {...field} />
+                </FormControl>
+                <FormDescription>
+                  The contact number of the employee.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="officeId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Office</FormLabel>
+                <Select
+                  value={String(selectedOfficeId ?? '')}
+                  onValueChange={(value) => {
+                    setSelectedOfficeId(Number(value))
+                  }}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Pilih kantor" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {offices.map((office) => (
+                      <SelectItem key={office.id} value={String(office.id)}>
+                        {office.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>The office of the employee.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex gap-2">
+            <Button variant={'secondary'} className="w-full">
+              <Link href="/karyawan">Batal</Link>
+            </Button>
+            <Button type="submit" className="w-full">
+              Tambah
+            </Button>
+          </div>
+        </form>
+      </Form>
     </Container>
   )
 }
