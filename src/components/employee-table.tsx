@@ -29,7 +29,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
@@ -44,132 +43,23 @@ import {
 import { DataTablePagination } from './data-table-pagination'
 import Link from 'next/link'
 
-const data: Karyawan[] = [
-  { id: 'k1', nama: 'John Doe', jabatan: 'Manager', kontak: '08123456789' },
-  { id: 'k2', nama: 'Jane Smith', jabatan: 'Developer', kontak: '08234567890' },
-  {
-    id: 'k3',
-    nama: 'Samuel Green',
-    jabatan: 'Designer',
-    kontak: '08345678901',
-  },
-  { id: 'k4', nama: 'Maria White', jabatan: 'HR', kontak: '08456789012' },
-  { id: 'k5', nama: 'Peter Brown', jabatan: 'Support', kontak: '08567890123' },
-  {
-    id: 'k6',
-    nama: 'Michael Johnson',
-    jabatan: 'Project Manager',
-    kontak: '08678901234',
-  },
-  {
-    id: 'k7',
-    nama: 'Emily Davis',
-    jabatan: 'Developer',
-    kontak: '08789012345',
-  },
-  { id: 'k8', nama: 'David Clark', jabatan: 'Designer', kontak: '08890123456' },
-  { id: 'k9', nama: 'Sophia Lee', jabatan: 'HR', kontak: '08901234567' },
-  { id: 'k10', nama: 'James White', jabatan: 'Support', kontak: '09012345678' },
-  {
-    id: 'k11',
-    nama: 'Olivia Harris',
-    jabatan: 'Marketing',
-    kontak: '09123456789',
-  },
-  {
-    id: 'k12',
-    nama: 'William Martinez',
-    jabatan: 'Developer',
-    kontak: '09234567890',
-  },
-  {
-    id: 'k13',
-    nama: 'Isabella Robinson',
-    jabatan: 'Manager',
-    kontak: '09345678901',
-  },
-  {
-    id: 'k14',
-    nama: 'Ethan Walker',
-    jabatan: 'Designer',
-    kontak: '09456789012',
-  },
-  { id: 'k15', nama: 'Charlotte Young', jabatan: 'HR', kontak: '09567890123' },
-  { id: 'k16', nama: 'Henry King', jabatan: 'Support', kontak: '09678901234' },
-  {
-    id: 'k17',
-    nama: 'Amelia Scott',
-    jabatan: 'Developer',
-    kontak: '09789012345',
-  },
-  {
-    id: 'k18',
-    nama: 'Liam Thomas',
-    jabatan: 'Project Manager',
-    kontak: '09890123456',
-  },
-  {
-    id: 'k19',
-    nama: 'Mason Green',
-    jabatan: 'Designer',
-    kontak: '09901234567',
-  },
-  { id: 'k20', nama: 'Harper Allen', jabatan: 'HR', kontak: '10012345678' },
-  { id: 'k21', nama: 'Avery Adams', jabatan: 'Support', kontak: '10123456789' },
-  {
-    id: 'k22',
-    nama: 'Elijah Nelson',
-    jabatan: 'Marketing',
-    kontak: '10234567890',
-  },
-  {
-    id: 'k23',
-    nama: 'Grace Carter',
-    jabatan: 'Developer',
-    kontak: '10345678901',
-  },
-  {
-    id: 'k24',
-    nama: 'Sebastian Mitchell',
-    jabatan: 'Manager',
-    kontak: '10456789012',
-  },
-  {
-    id: 'k25',
-    nama: 'Victoria Perez',
-    jabatan: 'Designer',
-    kontak: '10567890123',
-  },
-  { id: 'k26', nama: 'Benjamin Moore', jabatan: 'HR', kontak: '10678901234' },
-  {
-    id: 'k27',
-    nama: 'Mila Jackson',
-    jabatan: 'Support',
-    kontak: '10789012345',
-  },
-  {
-    id: 'k28',
-    nama: 'James Harris',
-    jabatan: 'Project Manager',
-    kontak: '10890123456',
-  },
-  {
-    id: 'k29',
-    nama: 'Zoe Martinez',
-    jabatan: 'Designer',
-    kontak: '10901234567',
-  },
-  { id: 'k30', nama: 'Lucas Lee', jabatan: 'Developer', kontak: '11012345678' },
-]
+// const data: Employee[] = [
+//   {
+//     id: 'EMP001',
+//     name: 'John Smith',
+//     position: 'Manager',
+//     contact: '08123456789',
+//   },
+// ]
 
-export type Karyawan = {
+export type Employee = {
   id: string
-  nama: string
-  jabatan: string
-  kontak: string
+  name: string
+  position: string
+  contact: string
 }
 
-export const columns: ColumnDef<Karyawan>[] = [
+export const columns: ColumnDef<Employee>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -193,7 +83,7 @@ export const columns: ColumnDef<Karyawan>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'nama',
+    accessorKey: 'name',
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -203,23 +93,23 @@ export const columns: ColumnDef<Karyawan>[] = [
         <ArrowUpDown />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue('nama')}</div>,
+    cell: ({ row }) => <div>{row.getValue('name')}</div>,
   },
   {
-    accessorKey: 'jabatan',
+    accessorKey: 'position',
     header: 'Jabatan',
-    cell: ({ row }) => <div>{row.getValue('jabatan')}</div>,
+    cell: ({ row }) => <div>{row.getValue('position')}</div>,
   },
   {
-    accessorKey: 'kontak',
+    accessorKey: 'contact',
     header: 'Kontak',
-    cell: ({ row }) => <div>{row.getValue('kontak')}</div>,
+    cell: ({ row }) => <div>{row.getValue('contact')}</div>,
   },
   {
     id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
-      const karyawan = row.original
+      const employee = row.original
 
       return (
         <DropdownMenu>
@@ -231,7 +121,7 @@ export const columns: ColumnDef<Karyawan>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Edit</DropdownMenuLabel>
-            <DropdownMenuItem>Hapus</DropdownMenuItem>
+            <DropdownMenuItem>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -239,7 +129,7 @@ export const columns: ColumnDef<Karyawan>[] = [
   },
 ]
 
-export function EmployeeTable() {
+export function EmployeeTable({ data }: { data: Employee[] }) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -273,9 +163,9 @@ export function EmployeeTable() {
         <div className="flex">
           <Input
             placeholder="Filter names..."
-            value={(table.getColumn('nama')?.getFilterValue() as string) ?? ''}
+            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
             onChange={(event) =>
-              table.getColumn('nama')?.setFilterValue(event.target.value)
+              table.getColumn('name')?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
@@ -308,8 +198,8 @@ export function EmployeeTable() {
         </div>
         <div>
           <Button asChild>
-            <Link href="/karyawan/add">
-              <Plus /> Tambah
+            <Link href="/employee/add">
+              <Plus /> Add
             </Link>
           </Button>
         </div>
