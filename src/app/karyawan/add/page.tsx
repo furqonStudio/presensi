@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import Link from 'next/link'
+import { useMutation } from '@tanstack/react-query'
 
 // Contoh data kantor (office)
 const offices = [
@@ -47,6 +48,20 @@ const formSchema = z.object({
   }),
 })
 
+async function addEmployee(data: any) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/employees`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/json' },
+  })
+
+  if (!response.ok) {
+    throw new Error('Error adding employee')
+  }
+
+  return response.json()
+}
+
 export default function AddEmployeeForm() {
   const [selectedOfficeId, setSelectedOfficeId] = useState<number | null>(null)
 
@@ -60,16 +75,20 @@ export default function AddEmployeeForm() {
     },
   })
 
-  const onSubmit = async (data: any) => {
-    // You can make an API call to save the employee data here
-    console.log(data)
+  const mutation = useMutation({
+    mutationFn: addEmployee,
+    onSuccess: (data) => {
+      console.log('Employee added successfully', data)
+      // You can navigate or show a success message here
+    },
+    onError: (error) => {
+      console.error('Error:', error)
+      // You can show an error message here
+    },
+  })
 
-    // Example API call:
-    // const response = await fetch('/api/employees', {
-    //   method: 'POST',
-    //   body: JSON.stringify(data),
-    //   headers: { 'Content-Type': 'application/json' }
-    // })
+  const onSubmit = async (data: any) => {
+    mutation.mutate(data)
   }
 
   useEffect(() => {
@@ -163,8 +182,12 @@ export default function AddEmployeeForm() {
             <Button variant={'secondary'} className="w-full">
               <Link href="/karyawan">Batal</Link>
             </Button>
-            <Button type="submit" className="w-full">
-              Tambah
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={mutation.isPending}
+            >
+              {mutation.isPending ? 'Loading...' : 'Tambah'}
             </Button>
           </div>
         </form>
