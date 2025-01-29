@@ -18,6 +18,7 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar'
 import QueryProvider from '@/components/query-provider'
+import { Toaster } from '@/components/ui/toaster'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -70,6 +71,7 @@ export default function RootLayout({
               {children}
             </SidebarInset>
           </SidebarProvider>
+          <Toaster />
         </QueryProvider>
       </body>
     </html>

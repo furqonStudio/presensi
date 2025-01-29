@@ -25,6 +25,8 @@ import {
 } from '@/components/ui/select'
 import Link from 'next/link'
 import { useMutation } from '@tanstack/react-query'
+import { useToast } from '@/hooks/use-toast'
+import { useRouter } from 'next/navigation'
 
 // Contoh data kantor (office)
 const offices = [
@@ -63,6 +65,8 @@ async function addEmployee(data: any) {
 }
 
 export default function AddEmployeeForm() {
+  const router = useRouter()
+  const { toast } = useToast()
   const [selectedOfficeId, setSelectedOfficeId] = useState<number | null>(null)
 
   const form = useForm({
@@ -78,12 +82,19 @@ export default function AddEmployeeForm() {
   const mutation = useMutation({
     mutationFn: addEmployee,
     onSuccess: (data) => {
-      console.log('Employee added successfully', data)
-      // You can navigate or show a success message here
+      toast({
+        title: 'Berhasil!',
+        description: 'Karyawan berhasil ditambahkan.',
+        variant: 'default',
+      })
+      router.push('/karyawan')
     },
     onError: (error) => {
-      console.error('Error:', error)
-      // You can show an error message here
+      toast({
+        title: 'Gagal!',
+        description: 'Terjadi kesalahan saat menambahkan karyawan.',
+        variant: 'destructive',
+      })
     },
   })
 
