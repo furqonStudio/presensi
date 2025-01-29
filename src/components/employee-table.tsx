@@ -60,28 +60,28 @@ export type Employee = {
 }
 
 export const columns: ColumnDef<Employee>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   id: 'select',
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && 'indeterminate')
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: 'name',
     header: ({ column }) => (
@@ -120,11 +120,25 @@ export const columns: ColumnDef<Employee>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <Link href={'/karyawan/1'}>
-              <DropdownMenuLabel>Lihat</DropdownMenuLabel>
+            <Link href={`/karyawan/${employee.id}`}>
+              <DropdownMenuItem>Lihat</DropdownMenuItem>
             </Link>
-            <DropdownMenuLabel>Edit</DropdownMenuLabel>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
+            <Link href={`/karyawan/edit?id=${employee.id}`}>
+              <DropdownMenuItem>Edit</DropdownMenuItem>
+            </Link>
+            <DropdownMenuItem
+              onClick={() => {
+                if (
+                  confirm(
+                    `Apakah Anda yakin ingin menghapus karyawan ${employee.name}?`,
+                  )
+                ) {
+                  console.log(`Delete employee ID: ${employee.id}`)
+                }
+              }}
+            >
+              Delete
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

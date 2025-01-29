@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -24,32 +24,28 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import Link from 'next/link'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 
-// Contoh data kantor (office)
-const offices = [
-  { id: 1, name: 'Kantor A' },
-  { id: 2, name: 'Kantor B' },
-]
-
-// Define the form schema with Zod validation
+// Skema validasi dengan Zod
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Name must be at least 2 characters.',
-  }),
-  position: z.string().min(2, {
-    message: 'Position must be at least 2 characters.',
-  }),
-  contact: z.string().min(10, {
-    message: 'Contact must be at least 10 characters.',
-  }),
-  officeId: z.number().min(1, {
-    message: 'Please select a valid office.',
-  }),
+  name: z.string().min(2, { message: 'Nama minimal 2 karakter.' }),
+  position: z.string().min(2, { message: 'Jabatan minimal 2 karakter.' }),
+  contact: z.string().min(10, { message: 'Kontak minimal 10 karakter.' }),
+  officeId: z.string().min(1, { message: 'Harap pilih kantor yang valid.' }),
 })
 
+// Fungsi fetch data kantor
+async function fetchOffices() {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/offices`)
+  if (!response.ok) {
+    throw new Error('Failed to fetch offices')
+  }
+  return response.json()
+}
+
+// Fungsi menambahkan karyawan
 async function addEmployee(data: any) {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/employees`, {
     method: 'POST',
@@ -67,7 +63,17 @@ async function addEmployee(data: any) {
 export default function AddEmployeeForm() {
   const router = useRouter()
   const { toast } = useToast()
-  const [selectedOfficeId, setSelectedOfficeId] = useState<number | null>(null)
+  const [selectedOfficeId, setSelectedOfficeId] = useState<string>('')
+
+  // Fetch data kantor menggunakan React Query
+  const {
+    data: offices,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['offices'],
+    queryFn: fetchOffices,
+  })
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -75,21 +81,21 @@ export default function AddEmployeeForm() {
       name: '',
       position: '',
       contact: '',
-      officeId: selectedOfficeId,
+      officeId: '',
     },
   })
 
   const mutation = useMutation({
     mutationFn: addEmployee,
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast({
         title: 'Berhasil!',
         description: 'Karyawan berhasil ditambahkan.',
-        variant: 'default',
+        variant: 'success',
       })
       router.push('/karyawan')
     },
-    onError: (error) => {
+    onError: () => {
       toast({
         title: 'Gagal!',
         description: 'Terjadi kesalahan saat menambahkan karyawan.',
@@ -98,111 +104,107 @@ export default function AddEmployeeForm() {
     },
   })
 
-  const onSubmit = async (data: any) => {
-    mutation.mutate(data)
+  const onSubmit = (data: any) => {
+    mutation.mutate({
+      ...data,
+      officeId: Number(data.officeId),
+    })
   }
-
-  useEffect(() => {
-    form.setValue('officeId', selectedOfficeId as number)
-  }, [selectedOfficeId, form])
 
   return (
     <Container>
       <h2 className="text-xl font-bold">Daftar Karyawan</h2>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="John Doe" {...field} />
-                </FormControl>
-                <FormDescription>
-                  The full name of the employee.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="position"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Position</FormLabel>
-                <FormControl>
-                  <Input placeholder="Manager" {...field} />
-                </FormControl>
-                <FormDescription>
-                  The job position of the employee.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="contact"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Contact</FormLabel>
-                <FormControl>
-                  <Input placeholder="08123456789" {...field} />
-                </FormControl>
-                <FormDescription>
-                  The contact number of the employee.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="officeId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Office</FormLabel>
-                <Select
-                  value={String(selectedOfficeId ?? '')}
-                  onValueChange={(value) => {
-                    setSelectedOfficeId(Number(value))
-                  }}
-                >
+
+      {isLoading && <p>Loading data kantor...</p>}
+      {isError && <p>Gagal mengambil data kantor</p>}
+
+      {!isLoading && !isError && (
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Pilih kantor" />
-                    </SelectTrigger>
+                    <Input placeholder="John Doe" {...field} />
                   </FormControl>
-                  <SelectContent>
-                    {offices.map((office) => (
-                      <SelectItem key={office.id} value={String(office.id)}>
-                        {office.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormDescription>The office of the employee.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex gap-2">
-            <Button variant={'secondary'} className="w-full">
-              <Link href="/karyawan">Batal</Link>
-            </Button>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={mutation.isPending}
-            >
-              {mutation.isPending ? 'Loading...' : 'Tambah'}
-            </Button>
-          </div>
-        </form>
-      </Form>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="position"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Position</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Manager" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="contact"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contact</FormLabel>
+                  <FormControl>
+                    <Input placeholder="08123456789" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="officeId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Office</FormLabel>
+                  <Select
+                    value={selectedOfficeId}
+                    onValueChange={(value) => {
+                      setSelectedOfficeId(value)
+                      form.setValue('officeId', value)
+                    }}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pilih kantor" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {offices.map((office: any) => (
+                        <SelectItem key={office.id} value={String(office.id)}>
+                          {office.description}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex gap-2">
+              <Button variant="secondary" className="w-full">
+                <Link href="/karyawan">Batal</Link>
+              </Button>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={mutation.isPending}
+              >
+                {mutation.isPending ? 'Loading...' : 'Tambah'}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      )}
     </Container>
   )
 }
