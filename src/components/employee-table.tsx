@@ -42,15 +42,23 @@ import {
 } from '@/components/ui/table'
 import { DataTablePagination } from './data-table-pagination'
 import Link from 'next/link'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from '@/hooks/use-toast'
 
-// const data: Employee[] = [
-//   {
-//     id: 'EMP001',
-//     name: 'John Smith',
-//     position: 'Manager',
-//     contact: '08123456789',
-//   },
-// ]
+const deleteEmployee = async (id: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/employees/${id}`,
+    {
+      method: 'DELETE',
+    },
+  )
+
+  if (!response.ok) {
+    throw new Error('Failed to delete employee')
+  }
+
+  return id
+}
 
 export type Employee = {
   id: string
@@ -60,28 +68,6 @@ export type Employee = {
 }
 
 export const columns: ColumnDef<Employee>[] = [
-  // {
-  //   id: 'select',
-  //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={
-  //         table.getIsAllPageRowsSelected() ||
-  //         (table.getIsSomePageRowsSelected() && 'indeterminate')
-  //       }
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label="Select all"
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label="Select row"
-  //     />
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
   {
     accessorKey: 'name',
     header: ({ column }) => (
@@ -110,6 +96,26 @@ export const columns: ColumnDef<Employee>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const employee = row.original
+      const queryClient = useQueryClient()
+
+      const mutation = useMutation({
+        mutationFn: (employeeId: string) => deleteEmployee(employeeId),
+        onSuccess: () => {
+          queryClient.invalidateQueries(['employees']) // To refetch the list of employees after deletion
+          toast({
+            title: 'Berhasil!',
+            description: 'Karyawan berhasil dihapus.',
+            variant: 'success',
+          })
+        },
+        onError: () => {
+          toast({
+            title: 'Gagal!',
+            description: 'Terjadi kesalahan saat menghapus karyawan.',
+            variant: 'destructive',
+          })
+        },
+      })
 
       return (
         <DropdownMenu>
@@ -133,7 +139,7 @@ export const columns: ColumnDef<Employee>[] = [
                     `Apakah Anda yakin ingin menghapus karyawan ${employee.name}?`,
                   )
                 ) {
-                  console.log(`Delete employee ID: ${employee.id}`)
+                  mutation.mutate(employee.id) // Trigger the delete mutation
                 }
               }}
             >
