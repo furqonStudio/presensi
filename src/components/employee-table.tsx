@@ -2,6 +2,17 @@
 
 import * as React from 'react'
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
@@ -97,6 +108,7 @@ export const columns: ColumnDef<Employee>[] = [
     cell: ({ row }) => {
       const employee = row.original
       const queryClient = useQueryClient()
+      const [open, setOpen] = React.useState(false)
 
       const mutation = useMutation({
         mutationFn: (employeeId: string) => deleteEmployee(employeeId),
@@ -118,35 +130,54 @@ export const columns: ColumnDef<Employee>[] = [
       })
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <Link href={`/karyawan/${employee.id}`}>
-              <DropdownMenuItem>Lihat</DropdownMenuItem>
-            </Link>
-            <Link href={`/karyawan/edit?id=${employee.id}`}>
-              <DropdownMenuItem>Edit</DropdownMenuItem>
-            </Link>
-            <DropdownMenuItem
-              onClick={() => {
-                if (
-                  confirm(
-                    `Apakah Anda yakin ingin menghapus karyawan ${employee.name}?`,
-                  )
-                ) {
-                  mutation.mutate(employee.id) // Trigger the delete mutation
-                }
-              }}
-            >
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <Link href={`/karyawan/${employee.id}`}>
+                <DropdownMenuItem>Lihat</DropdownMenuItem>
+              </Link>
+              <Link href={`/karyawan/edit?id=${employee.id}`}>
+                <DropdownMenuItem>Edit</DropdownMenuItem>
+              </Link>
+              <DropdownMenuItem onSelect={() => setOpen(true)}>
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <AlertDialog open={open} onOpenChange={setOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Apakah Anda yakin ingin menghapus karyawan ini?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  Tindakan ini tidak dapat dibatalkan. Data karyawan akan
+                  dihapus secara permanen.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => setOpen(false)}>
+                  Batal
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    mutation.mutate(employee.id)
+                    setOpen(false)
+                  }}
+                >
+                  Hapus
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>
       )
     },
   },
