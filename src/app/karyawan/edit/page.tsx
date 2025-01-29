@@ -28,23 +28,22 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-const offices = [
-  { id: 1, name: 'Kantor A' },
-  { id: 2, name: 'Kantor B' },
-]
-
 const formSchema = z.object({
-  name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
-  position: z
-    .string()
-    .min(2, { message: 'Position must be at least 2 characters.' }),
-  contact: z
-    .string()
-    .min(10, { message: 'Contact must be at least 10 characters.' }),
-  officeId: z.number().min(1, { message: 'Please select a valid office.' }),
+  name: z.string().min(2, { message: 'Nama minimal 2 karakter.' }),
+  position: z.string().min(2, { message: 'Jabatan minimal 2 karakter.' }),
+  contact: z.string().min(10, { message: 'Kontak minimal 10 karakter.' }),
+  officeId: z.string().min(1, { message: 'Harap pilih kantor yang valid.' }),
 })
 
-async function fetchEmployee(id) {
+async function fetchOffices() {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/offices`)
+  if (!response.ok) {
+    throw new Error('Failed to fetch offices')
+  }
+  return response.json()
+}
+
+async function fetchEmployee(id: string) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/employees/${id}`,
   )
@@ -54,7 +53,7 @@ async function fetchEmployee(id) {
   return response.json()
 }
 
-async function updateEmployee(id, data) {
+async function updateEmployee(id: string, data: any) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/employees/${id}`,
     {
@@ -76,10 +75,20 @@ export default function EditEmployeeForm() {
   const searchParams = useSearchParams()
   const employeeId = searchParams.get('id')
 
-  const { data: employee, isLoading } = useQuery({
+  const { data: employee, isLoading: isEmployeeLoading } = useQuery({
     queryKey: ['employee', employeeId],
-    queryFn: () => fetchEmployee(employeeId),
+    queryFn: () => fetchEmployee(employeeId!),
     enabled: !!employeeId,
+  })
+
+  // Fetch the offices
+  const {
+    data: offices,
+    isLoading: isOfficesLoading,
+    isError: isOfficesError,
+  } = useQuery({
+    queryKey: ['offices'],
+    queryFn: fetchOffices,
   })
 
   const form = useForm({
@@ -94,22 +103,23 @@ export default function EditEmployeeForm() {
 
   useEffect(() => {
     if (employee) {
+      console.log('🚀 ~ useEffect ~ employee:', employee)
       form.reset({
         name: employee.name,
         position: employee.position,
         contact: employee.contact,
-        officeId: employee.officeId ? String(employee.officeId) : '', // Pastikan bukan undefined/null
+        officeId: employee.officeId ? String(employee.officeId) : '',
       })
     }
   }, [employee, form])
 
   const mutation = useMutation({
-    mutationFn: (data) => updateEmployee(employeeId, data),
+    mutationFn: (data: any) => updateEmployee(employeeId!, data),
     onSuccess: () => {
       toast({
         title: 'Berhasil!',
         description: 'Karyawan berhasil diperbarui.',
-        variant: 'default',
+        variant: 'success',
       })
       router.push('/karyawan')
     },
@@ -122,23 +132,27 @@ export default function EditEmployeeForm() {
     },
   })
 
-  const onSubmit = (data) => {
-    mutation.mutate(data)
+  const onSubmit = (data: any) => {
+    mutation.mutate({
+      ...data,
+      officeId: Number(data.officeId),
+    })
   }
 
-  if (isLoading) return <p>Loading...</p>
+  if (isEmployeeLoading || isOfficesLoading) return <p>Loading...</p>
+  if (isOfficesError) return <p>Failed to load offices</p>
 
   return (
     <Container>
       <h2 className="text-xl font-bold">Edit Karyawan</h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Nama</FormLabel>
                 <FormControl>
                   <Input placeholder="John Doe" {...field} />
                 </FormControl>
@@ -151,7 +165,7 @@ export default function EditEmployeeForm() {
             name="position"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Position</FormLabel>
+                <FormLabel>Jabatan</FormLabel>
                 <FormControl>
                   <Input placeholder="Manager" {...field} />
                 </FormControl>
@@ -164,7 +178,7 @@ export default function EditEmployeeForm() {
             name="contact"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contact</FormLabel>
+                <FormLabel>Kontak</FormLabel>
                 <FormControl>
                   <Input placeholder="08123456789" {...field} />
                 </FormControl>
@@ -177,9 +191,9 @@ export default function EditEmployeeForm() {
             name="officeId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Office</FormLabel>
+                <FormLabel>Kantor</FormLabel>
                 <Select
-                  onValueChange={(value) => field.onChange(Number(value))}
+                  onValueChange={(value) => field.onChange(value)} // Tetap kirim nilai string
                   value={field.value ? String(field.value) : ''}
                 >
                   <FormControl>
@@ -190,7 +204,7 @@ export default function EditEmployeeForm() {
                   <SelectContent>
                     {offices.map((office) => (
                       <SelectItem key={office.id} value={String(office.id)}>
-                        {office.name}
+                        {office.description}
                       </SelectItem>
                     ))}
                   </SelectContent>
