@@ -214,9 +214,11 @@ export default function EditEmployeeForm() {
             )}
           />
           <div className="flex gap-2">
-            <Button variant={'secondary'} className="w-full">
-              <Link href="/karyawan">Batal</Link>
-            </Button>
+            <Link href="/karyawan" className="w-full">
+              <Button variant={'secondary'} className="w-full" type="button">
+                Batal
+              </Button>
+            </Link>
             <Button
               type="submit"
               className="w-full"
