@@ -105,6 +105,7 @@ export default function AddEmployeeForm() {
   })
 
   const onSubmit = (data: any) => {
+    console.log('🚀 ~ onSubmit ~ data:', data)
     mutation.mutate({
       ...data,
       officeId: Number(data.officeId),
@@ -126,7 +127,7 @@ export default function AddEmployeeForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Nama</FormLabel>
                   <FormControl>
                     <Input placeholder="John Doe" {...field} />
                   </FormControl>
@@ -139,7 +140,7 @@ export default function AddEmployeeForm() {
               name="position"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Position</FormLabel>
+                  <FormLabel>Jabatan</FormLabel>
                   <FormControl>
                     <Input placeholder="Manager" {...field} />
                   </FormControl>
@@ -152,7 +153,7 @@ export default function AddEmployeeForm() {
               name="contact"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Contact</FormLabel>
+                  <FormLabel>Kontak</FormLabel>
                   <FormControl>
                     <Input placeholder="08123456789" {...field} />
                   </FormControl>
@@ -165,7 +166,7 @@ export default function AddEmployeeForm() {
               name="officeId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Office</FormLabel>
+                  <FormLabel>Kantor</FormLabel>
                   <Select
                     value={selectedOfficeId}
                     onValueChange={(value) => {
