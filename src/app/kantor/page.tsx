@@ -1,11 +1,10 @@
 'use client'
 import { Container } from '@/components/container'
-import { Employee } from '@/components/employee-table'
-import { OfficeTable } from '@/components/office-table'
+import { Office, OfficeTable } from '@/components/office-table'
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 
-async function fetchOffices(): Promise<Employee[]> {
+async function fetchOffices(): Promise<Office[]> {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/offices`)
   if (!response.ok) {
     throw new Error('Network response was not ok')
@@ -14,7 +13,7 @@ async function fetchOffices(): Promise<Employee[]> {
 }
 
 const OfficePage = () => {
-  const { data, isLoading, isError, error } = useQuery<Employee[], Error>({
+  const { data, isLoading, isError, error } = useQuery<Office[], Error>({
     queryKey: ['offices'],
     queryFn: fetchOffices,
   })

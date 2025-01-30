@@ -72,7 +72,7 @@ export default function AddOfficeForm() {
         description: 'Kantor berhasil ditambahkan.',
         variant: 'success',
       })
-      router.push('/offices') // Sesuaikan dengan rute daftar kantor Anda
+      router.push('/kantor') // Sesuaikan dengan rute daftar kantor Anda
     },
     onError: () => {
       toast({
@@ -84,7 +84,14 @@ export default function AddOfficeForm() {
   })
 
   const onSubmit = (data: any) => {
-    mutation.mutate(data)
+    // Pastikan latitude dan longitude dalam tipe number
+    const transformedData = {
+      ...data,
+      latitude: parseFloat(data.latitude) || 0, // Menangani konversi ke number, fallback ke 0
+      longitude: parseFloat(data.longitude) || 0, // Menangani konversi ke number, fallback ke 0
+    }
+
+    mutation.mutate(transformedData)
   }
 
   return (
@@ -139,7 +146,17 @@ export default function AddOfficeForm() {
               <FormItem>
                 <FormLabel>Latitude</FormLabel>
                 <FormControl>
-                  <Input placeholder="Latitude" type="number" {...field} />
+                  <Input
+                    placeholder="Latitude"
+                    type="number"
+                    {...field}
+                    value={field.value || ''} // Setel nilai sebagai string kosong jika null atau undefined
+                    onChange={(e) => {
+                      const value = e.target.value
+                      // Menangani konversi dan memastikan bukan NaN
+                      field.onChange(value ? parseFloat(value) || 0 : 0)
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -152,7 +169,17 @@ export default function AddOfficeForm() {
               <FormItem>
                 <FormLabel>Longitude</FormLabel>
                 <FormControl>
-                  <Input placeholder="Longitude" type="number" {...field} />
+                  <Input
+                    placeholder="Longitude"
+                    type="number"
+                    {...field}
+                    value={field.value || ''} // Setel nilai sebagai string kosong jika null atau undefined
+                    onChange={(e) => {
+                      const value = e.target.value
+                      // Menangani konversi dan memastikan bukan NaN
+                      field.onChange(value ? parseFloat(value) || 0 : 0)
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -163,7 +190,7 @@ export default function AddOfficeForm() {
               type="button"
               variant="secondary"
               className="w-full"
-              onClick={() => router.push('/offices')} // Sesuaikan dengan rute yang diinginkan
+              onClick={() => router.push('/kantor')} // Sesuaikan dengan rute yang diinginkan
             >
               Batal
             </Button>
