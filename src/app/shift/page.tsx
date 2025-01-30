@@ -25,7 +25,7 @@ const OfficePage = () => {
 
   return (
     <Container>
-      <h2 className="text-xl font-bold">Daftar Kantor</h2>
+      <h2 className="text-xl font-bold">Daftar Shift</h2>
       <ShiftTable data={data || []} />
     </Container>
   )
