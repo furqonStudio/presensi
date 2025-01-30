@@ -1,6 +1,7 @@
 'use client'
 import { Container } from '@/components/container'
-import { Employee, EmployeeTable } from '@/components/employee-table'
+import { Employee } from '@/components/employee-table'
+import { OfficeTable } from '@/components/office-table'
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 
@@ -25,7 +26,7 @@ const OfficePage = () => {
   return (
     <Container>
       <h2 className="text-xl font-bold">Daftar Kantor</h2>
-      <EmployeeTable data={data || []} />
+      <OfficeTable data={data || []} />
     </Container>
   )
 }

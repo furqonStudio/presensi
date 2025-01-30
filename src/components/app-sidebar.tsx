@@ -52,11 +52,11 @@ const data = {
       items: [
         {
           title: 'Shift',
-          url: '#',
+          url: '/shift',
         },
         {
-          title: 'Lokasi',
-          url: '#',
+          title: 'Kantor',
+          url: '/kantor',
         },
       ],
     },
