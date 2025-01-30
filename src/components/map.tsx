@@ -1,74 +1,55 @@
-'use client'
-
-import { useEffect, useRef } from 'react'
+import { useState } from 'react'
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMapEvents,
+} from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import markerIcon from 'leaflet/dist/images/marker-icon.png'
-import markerIconShadow from 'leaflet/dist/images/marker-shadow.png'
 
-interface MapProps {
-  latitude?: number
-  longitude?: number
-  onCoordinateSelect?: (lat: number, lng: number) => void // Opsional, untuk kasus klik peta
-}
+export function Map({
+  onCoordinateSelect,
+}: {
+  onCoordinateSelect: (lat: number, lng: number) => void
+}) {
+  const [position, setPosition] = useState<[number, number] | null>(null)
+  const customIcon = new L.Icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+    shadowSize: [41, 41],
+  })
 
-const Map = ({ latitude = 0, longitude = 0, onCoordinateSelect }: MapProps) => {
-  const mapRef = useRef<L.Map | null>(null)
-  const markerRef = useRef<L.Marker | null>(null)
-
-  useEffect(() => {
-    // Fix default icon issue
-    const DefaultIcon = L.icon({
-      iconUrl: markerIcon.src,
-      shadowUrl: markerIconShadow.src,
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      shadowSize: [41, 41],
+  function LocationMarker() {
+    const map = useMapEvents({
+      click(e) {
+        const { lat, lng } = e.latlng
+        setPosition([lat, lng])
+        onCoordinateSelect(lat, lng)
+      },
     })
 
-    L.Marker.prototype.options.icon = DefaultIcon
+    return position ? (
+      <Marker position={position} icon={customIcon}>
+        <Popup>
+          Koordinat: {position[0]}, {position[1]}
+        </Popup>
+      </Marker>
+    ) : null
+  }
 
-    // Inisialisasi peta
-    const leafletMap = L.map('map').setView([latitude, longitude], 13)
-
-    // Tambahkan tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(leafletMap)
-
-    // Tambahkan marker jika koordinat tersedia
-    if (latitude !== 0 || longitude !== 0) {
-      markerRef.current = L.marker([latitude, longitude]).addTo(leafletMap)
-    }
-
-    // Jika ada callback untuk klik peta
-    if (onCoordinateSelect) {
-      leafletMap.on('click', (e: L.LeafletMouseEvent) => {
-        const { lat, lng } = e.latlng
-
-        // Hapus marker sebelumnya (jika ada)
-        if (markerRef.current) {
-          leafletMap.removeLayer(markerRef.current)
-        }
-
-        // Tambahkan marker baru
-        markerRef.current = L.marker([lat, lng]).addTo(leafletMap)
-
-        // Panggil callback
-        onCoordinateSelect(lat, lng)
-      })
-    }
-
-    mapRef.current = leafletMap
-
-    // Bersihkan peta saat komponen di-unmount
-    return () => {
-      leafletMap.remove()
-    }
-  }, [latitude, longitude, onCoordinateSelect])
-
-  return <div id="map" style={{ height: '400px', width: '100%' }} />
+  return (
+    <MapContainer
+      center={[-6.2088, 106.8456]}
+      zoom={13}
+      style={{ height: '300px', width: '100%' }}
+    >
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      <LocationMarker />
+    </MapContainer>
+  )
 }
-
-export default Map
