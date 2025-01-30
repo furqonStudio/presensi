@@ -142,7 +142,7 @@ export const columns: ColumnDef<Employee>[] = [
               <Link href={`/karyawan/${employee.id}`}>
                 <DropdownMenuItem>Lihat</DropdownMenuItem>
               </Link>
-              <Link href={`/karyawan/edit?id=${employee.id}`}>
+              <Link href={`/karyawan/edit/${employee.id}`}>
                 <DropdownMenuItem>Edit</DropdownMenuItem>
               </Link>
               <DropdownMenuItem onSelect={() => setOpen(true)}>

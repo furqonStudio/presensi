@@ -63,9 +63,7 @@ async function addEmployee(data: any) {
 export default function AddEmployeeForm() {
   const router = useRouter()
   const { toast } = useToast()
-  const [selectedOfficeId, setSelectedOfficeId] = useState<string>('')
 
-  // Fetch data kantor menggunakan React Query
   const {
     data: offices,
     isLoading,
@@ -105,7 +103,6 @@ export default function AddEmployeeForm() {
   })
 
   const onSubmit = (data: any) => {
-    console.log('🚀 ~ onSubmit ~ data:', data)
     mutation.mutate({
       ...data,
       officeId: Number(data.officeId),
@@ -168,11 +165,8 @@ export default function AddEmployeeForm() {
                 <FormItem>
                   <FormLabel>Kantor</FormLabel>
                   <Select
-                    value={selectedOfficeId}
-                    onValueChange={(value) => {
-                      setSelectedOfficeId(value)
-                      form.setValue('officeId', value)
-                    }}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
