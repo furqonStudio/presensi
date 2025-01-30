@@ -10,11 +10,15 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
 export function Map({
+  initialCoordinates = [-6.2088, 106.8456], // Default ke Jakarta
   onCoordinateSelect,
 }: {
-  onCoordinateSelect: (lat: number, lng: number) => void
+  initialCoordinates?: [number, number]
+  onCoordinateSelect?: (lat: number, lng: number) => void
 }) {
-  const [position, setPosition] = useState<[number, number] | null>(null)
+  const [position, setPosition] = useState<[number, number]>(initialCoordinates)
+
+  // Membuat ikon marker kustom
   const customIcon = new L.Icon({
     iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
     iconSize: [25, 41],
@@ -24,12 +28,13 @@ export function Map({
     shadowSize: [41, 41],
   })
 
+  // Menangani event klik peta untuk memilih koordinat baru
   function LocationMarker() {
-    const map = useMapEvents({
+    useMapEvents({
       click(e) {
         const { lat, lng } = e.latlng
-        setPosition([lat, lng])
-        onCoordinateSelect(lat, lng)
+        setPosition([lat, lng]) // Memperbarui posisi berdasarkan klik
+        if (onCoordinateSelect) onCoordinateSelect(lat, lng) // Memanggil callback jika ada
       },
     })
 
@@ -44,7 +49,7 @@ export function Map({
 
   return (
     <MapContainer
-      center={[-6.2088, 106.8456]}
+      center={position}
       zoom={13}
       style={{ height: '300px', width: '100%' }}
     >

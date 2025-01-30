@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { Container } from '@/components/container'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import Map from '@/components/map'
+import { Map } from '@/components/map'
 
 async function fetchOffice(id: string) {
   const response = await fetch(
@@ -72,11 +72,17 @@ export default function OfficeDetail() {
         </p>
       </div>
 
-      {/* Tampilkan Peta */}
-      <div className="mt-4">
-        <h3 className="text-lg font-semibold">Lokasi Kantor:</h3>
-        <Map latitude={office.latitude} longitude={office.longitude} />
-      </div>
+      {office.latitude && office.longitude && (
+        <div className="mt-4">
+          <h3 className="text-lg font-semibold">Lokasi Kantor:</h3>
+          <Map
+            onCoordinateSelect={(lat, lng) => {
+              console.log(`Koordinat yang dipilih: ${lat}, ${lng}`)
+            }}
+            initialCoordinates={[office.latitude, office.longitude]} // Kirim koordinat awal dari data kantor
+          />
+        </div>
+      )}
 
       <div className="mt-4">
         <h3 className="text-lg font-semibold">Karyawan di Kantor Ini:</h3>
