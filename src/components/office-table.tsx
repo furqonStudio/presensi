@@ -250,13 +250,6 @@ export function OfficeTable({ data }: { data: Office[] }) {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div>
-          <Button asChild>
-            <Link href="/kantor/add">
-              <Plus /> Tambah
-            </Link>
-          </Button>
-        </div>
       </div>
       <div className="rounded-md border">
         <Table>

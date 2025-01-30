@@ -2,7 +2,10 @@
 import { Container } from '@/components/container'
 import { Office, OfficeTable } from '@/components/office-table'
 import { Shift, ShiftTable } from '@/components/shift-table'
+import { Button } from '@/components/ui/button'
 import { useQuery } from '@tanstack/react-query'
+import { Plus } from 'lucide-react'
+import Link from 'next/link'
 import React from 'react'
 
 async function fetchShifts(): Promise<Shift[]> {
@@ -25,7 +28,14 @@ const OfficePage = () => {
 
   return (
     <Container>
-      <h2 className="text-xl font-bold">Daftar Shift</h2>
+      <div className="flex items-end justify-between">
+        <h2 className="text-2xl font-bold">Daftar Shift</h2>
+        <Button asChild>
+          <Link href="/shift/add">
+            <Plus /> Tambah
+          </Link>
+        </Button>
+      </div>
       <ShiftTable data={data || []} />
     </Container>
   )

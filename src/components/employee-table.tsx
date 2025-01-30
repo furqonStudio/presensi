@@ -250,13 +250,6 @@ export function EmployeeTable({ data }: { data: Employee[] }) {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div>
-          <Button asChild>
-            <Link href="/karyawan/add">
-              <Plus /> Tambah
-            </Link>
-          </Button>
-        </div>
       </div>
       <div className="rounded-md border">
         <Table>

@@ -255,13 +255,6 @@ export function ShiftTable({ data }: { data: Shift[] }) {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div>
-          <Button asChild>
-            <Link href="/shift/add">
-              <Plus /> Tambah Shift
-            </Link>
-          </Button>
-        </div>
       </div>
       <div className="rounded-md border">
         <Table>

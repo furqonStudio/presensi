@@ -1,7 +1,10 @@
 'use client'
 import { Container } from '@/components/container'
 import { Office, OfficeTable } from '@/components/office-table'
+import { Button } from '@/components/ui/button'
 import { useQuery } from '@tanstack/react-query'
+import { Plus } from 'lucide-react'
+import Link from 'next/link'
 import React from 'react'
 
 async function fetchOffices(): Promise<Office[]> {
@@ -24,7 +27,14 @@ const OfficePage = () => {
 
   return (
     <Container>
-      <h2 className="text-xl font-bold">Daftar Kantor</h2>
+      <div className="flex items-end justify-between">
+        <h2 className="text-2xl font-bold">Daftar Kantor</h2>
+        <Button asChild>
+          <Link href="/kantor/add">
+            <Plus /> Tambah
+          </Link>
+        </Button>
+      </div>
       <OfficeTable data={data || []} />
     </Container>
   )
