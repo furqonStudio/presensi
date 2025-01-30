@@ -18,6 +18,8 @@ import { Container } from '@/components/container'
 import { useMutation } from '@tanstack/react-query'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
+import Map from '@/components/map-picker'
+import MapPicker from '@/components/map-picker'
 
 // Skema validasi dengan Zod
 const formSchema = z.object({
@@ -84,14 +86,18 @@ export default function AddOfficeForm() {
   })
 
   const onSubmit = (data: any) => {
-    // Pastikan latitude dan longitude dalam tipe number
     const transformedData = {
       ...data,
-      latitude: parseFloat(data.latitude) || 0, // Menangani konversi ke number, fallback ke 0
-      longitude: parseFloat(data.longitude) || 0, // Menangani konversi ke number, fallback ke 0
+      latitude: parseFloat(data.latitude) || 0,
+      longitude: parseFloat(data.longitude) || 0,
     }
 
     mutation.mutate(transformedData)
+  }
+
+  const handleCoordinateSelect = (lat: number, lng: number) => {
+    form.setValue('latitude', lat)
+    form.setValue('longitude', lng)
   }
 
   return (
@@ -150,10 +156,9 @@ export default function AddOfficeForm() {
                     placeholder="Latitude"
                     type="number"
                     {...field}
-                    value={field.value || ''} // Setel nilai sebagai string kosong jika null atau undefined
+                    value={field.value || ''}
                     onChange={(e) => {
                       const value = e.target.value
-                      // Menangani konversi dan memastikan bukan NaN
                       field.onChange(value ? parseFloat(value) || 0 : 0)
                     }}
                   />
@@ -173,10 +178,9 @@ export default function AddOfficeForm() {
                     placeholder="Longitude"
                     type="number"
                     {...field}
-                    value={field.value || ''} // Setel nilai sebagai string kosong jika null atau undefined
+                    value={field.value || ''}
                     onChange={(e) => {
                       const value = e.target.value
-                      // Menangani konversi dan memastikan bukan NaN
                       field.onChange(value ? parseFloat(value) || 0 : 0)
                     }}
                   />
@@ -185,12 +189,13 @@ export default function AddOfficeForm() {
               </FormItem>
             )}
           />
+          <MapPicker onCoordinateSelect={handleCoordinateSelect} />
           <div className="flex gap-2">
             <Button
               type="button"
               variant="secondary"
               className="w-full"
-              onClick={() => router.push('/kantor')} // Sesuaikan dengan rute yang diinginkan
+              onClick={() => router.push('/kantor')}
             >
               Batal
             </Button>
