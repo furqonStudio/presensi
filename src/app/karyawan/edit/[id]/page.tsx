@@ -52,6 +52,7 @@ async function fetchEmployee(id) {
 }
 
 async function updateEmployee(id, data) {
+  console.log('🚀 ~ updateEmployee ~ data:', data)
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/employees/${id}`,
     {
@@ -132,8 +133,12 @@ export default function EditEmployeeForm() {
   }, [employee, form])
 
   const onSubmit = async (data) => {
+    const updatedData = {
+      ...data,
+      officeId: Number(data.officeId),
+    }
     try {
-      await updateEmployee(id, data)
+      await updateEmployee(id, updatedData)
       toast({
         title: 'Berhasil!',
         description: 'Data karyawan berhasil diperbarui.',
