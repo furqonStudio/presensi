@@ -71,7 +71,7 @@ function PresensiForm({ form, onSubmit, location }) {
       <Input placeholder="Employee ID" {...form.register('employeeId')} />
       <Card>
         <CardContent>
-          <Map initialCoordinates={location} />
+          <Map mode="presensi" initialCoordinates={location} />
         </CardContent>
       </Card>
       <Button type="submit" className="w-full">
