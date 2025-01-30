@@ -188,7 +188,7 @@ export default function AddOfficeForm() {
               </FormItem>
             )}
           />
-          <Map onCoordinateSelect={handleCoordinateSelect} />
+          <Map mode="select" onCoordinateSelect={handleCoordinateSelect} />
 
           <div className="flex gap-2">
             <Button

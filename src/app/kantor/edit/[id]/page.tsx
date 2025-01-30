@@ -18,6 +18,8 @@ import { Container } from '@/components/container'
 import { useMutation } from '@tanstack/react-query'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter, useParams } from 'next/navigation'
+import { Map } from '@/components/map'
+import Link from 'next/link'
 
 // Skema validasi dengan Zod
 const formSchema = z.object({
@@ -69,12 +71,19 @@ export default function EditOfficeForm() {
   const [office, setOffice] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [initialCoordinates, setInitialCoordinates] = useState<
+    [number, number]
+  >([
+    0,
+    0, // Koordinat default
+  ])
 
   useEffect(() => {
     const loadOffice = async () => {
       try {
         const officeData = await fetchOffice(id)
         setOffice(officeData)
+        setInitialCoordinates([officeData.latitude, officeData.longitude])
         setLoading(false)
       } catch (error) {
         setError(error.message)
@@ -131,6 +140,11 @@ export default function EditOfficeForm() {
           variant: 'destructive',
         })
       })
+  }
+
+  const handleCoordinateSelect = (lat: number, lng: number) => {
+    form.setValue('latitude', lat)
+    form.setValue('longitude', lng)
   }
 
   return (
@@ -226,14 +240,18 @@ export default function EditOfficeForm() {
                 </FormItem>
               )}
             />
+            <Map
+              mode="select"
+              onCoordinateSelect={handleCoordinateSelect}
+              initialCoordinates={initialCoordinates}
+            />
+
             <div className="flex gap-2">
-              <Button
-                variant="secondary"
-                className="w-full"
-                onClick={() => router.push('/kantor')}
-              >
-                Batal
-              </Button>
+              <Link href="/kantor" className="w-full">
+                <Button variant={'secondary'} className="w-full" type="button">
+                  Batal
+                </Button>
+              </Link>
               <Button type="submit" className="w-full">
                 Simpan
               </Button>

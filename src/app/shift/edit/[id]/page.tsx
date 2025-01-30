@@ -18,6 +18,7 @@ import { Container } from '@/components/container'
 import { useMutation } from '@tanstack/react-query'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter, useParams } from 'next/navigation'
+import Link from 'next/link'
 
 // Skema validasi dengan Zod
 const formSchema = z.object({
@@ -171,13 +172,11 @@ export default function EditShiftForm() {
               />
             </div>
             <div className="flex gap-2">
-              <Button
-                variant="secondary"
-                className="w-full"
-                onClick={() => router.push('/shift')}
-              >
-                Batal
-              </Button>
+              <Link href="/shift" className="w-full">
+                <Button variant={'secondary'} className="w-full" type="button">
+                  Batal
+                </Button>
+              </Link>
               <Button type="submit" className="w-full">
                 Simpan
               </Button>

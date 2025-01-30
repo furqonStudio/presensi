@@ -12,9 +12,11 @@ import L from 'leaflet'
 export function Map({
   initialCoordinates = [-6.2088, 106.8456], // Default ke Jakarta
   onCoordinateSelect,
+  mode = 'view', // 'select' atau 'view'
 }: {
   initialCoordinates?: [number, number]
   onCoordinateSelect?: (lat: number, lng: number) => void
+  mode?: 'select' | 'view' // Mode untuk menentukan apakah memilih koordinat atau hanya melihat
 }) {
   const [position, setPosition] = useState<[number, number]>(initialCoordinates)
 
@@ -28,13 +30,15 @@ export function Map({
     shadowSize: [41, 41],
   })
 
-  // Menangani event klik peta untuk memilih koordinat baru
+  // Menangani event klik peta untuk memilih koordinat baru jika mode 'select'
   function LocationMarker() {
     useMapEvents({
       click(e) {
-        const { lat, lng } = e.latlng
-        setPosition([lat, lng]) // Memperbarui posisi berdasarkan klik
-        if (onCoordinateSelect) onCoordinateSelect(lat, lng) // Memanggil callback jika ada
+        if (mode === 'select') {
+          const { lat, lng } = e.latlng
+          setPosition([lat, lng]) // Memperbarui posisi berdasarkan klik
+          if (onCoordinateSelect) onCoordinateSelect(lat, lng) // Memanggil callback jika ada
+        }
       },
     })
 
@@ -60,8 +64,10 @@ export function Map({
   return (
     <MapContainer
       center={position}
-      zoom={20}
+      zoom={mode === 'view' ? 30 : 15} // Zoom berbeda antara mode 'view' dan 'select'
       style={{ height: '300px', width: '100%' }}
+      scrollWheelZoom={true} // Mengaktifkan zoom scroll
+      dragging={mode === 'view'} // Menonaktifkan drag map di mode 'view'
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <LocationMarker />

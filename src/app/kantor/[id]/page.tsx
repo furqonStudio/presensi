@@ -76,9 +76,7 @@ export default function OfficeDetail() {
         <div className="mt-4">
           <h3 className="text-lg font-semibold">Lokasi Kantor:</h3>
           <Map
-            onCoordinateSelect={(lat, lng) => {
-              console.log(`Koordinat yang dipilih: ${lat}, ${lng}`)
-            }}
+            mode="view"
             initialCoordinates={[office.latitude, office.longitude]} // Kirim koordinat awal dari data kantor
           />
         </div>
