@@ -18,8 +18,7 @@ import { Container } from '@/components/container'
 import { useMutation } from '@tanstack/react-query'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
-import Map from '@/components/map-picker'
-import MapPicker from '@/components/map-picker'
+import Map from '@/components/map'
 
 // Skema validasi dengan Zod
 const formSchema = z.object({
@@ -189,7 +188,7 @@ export default function AddOfficeForm() {
               </FormItem>
             )}
           />
-          <MapPicker onCoordinateSelect={handleCoordinateSelect} />
+          <Map onCoordinateSelect={handleCoordinateSelect} />
           <div className="flex gap-2">
             <Button
               type="button"

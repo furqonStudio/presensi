@@ -1,10 +1,11 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { Container } from '@/components/container'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import Map from '@/components/map'
 
 async function fetchOffice(id: string) {
   const response = await fetch(
@@ -28,7 +29,6 @@ async function fetchEmployeesByOffice(officeId: string) {
 
 export default function OfficeDetail() {
   const { id } = useParams()
-  console.log('🚀 ~ OfficeDetail ~ id:', id)
 
   const {
     data: office,
@@ -71,6 +71,13 @@ export default function OfficeDetail() {
           <strong>Deskripsi:</strong> {office.description || 'Tidak tersedia'}
         </p>
       </div>
+
+      {/* Tampilkan Peta */}
+      <div className="mt-4">
+        <h3 className="text-lg font-semibold">Lokasi Kantor:</h3>
+        <Map latitude={office.latitude} longitude={office.longitude} />
+      </div>
+
       <div className="mt-4">
         <h3 className="text-lg font-semibold">Karyawan di Kantor Ini:</h3>
         <ul className="list-disc pl-5">
