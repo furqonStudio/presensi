@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -23,7 +23,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import Link from 'next/link'
-import { useMutation, useQuery } from '@tanstack/react-query'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter, useParams } from 'next/navigation'
 
@@ -31,7 +30,7 @@ const formSchema = z.object({
   name: z.string().min(2, { message: 'Nama minimal 2 karakter.' }),
   position: z.string().min(2, { message: 'Jabatan minimal 2 karakter.' }),
   contact: z.string().min(10, { message: 'Kontak minimal 10 karakter.' }),
-  // officeId: z.string().min(1, { message: 'Harap pilih kantor yang valid.' }),
+  officeId: z.string().min(1, { message: 'Harap pilih kantor yang valid.' }),
 })
 
 async function fetchOffices() {
@@ -72,24 +71,44 @@ export default function EditEmployeeForm() {
   const { id } = useParams()
   const { toast } = useToast()
 
-  const {
-    data: offices,
-    isLoading: isLoadingOffices,
-    isError: isErrorOffices,
-  } = useQuery({
-    queryKey: ['offices'],
-    queryFn: fetchOffices,
-  })
+  const [offices, setOffices] = useState([])
+  const [employee, setEmployee] = useState(null)
+  const [loadingOffices, setLoadingOffices] = useState(true)
+  const [loadingEmployee, setLoadingEmployee] = useState(true)
+  const [errorOffices, setErrorOffices] = useState(null)
+  const [errorEmployee, setErrorEmployee] = useState(null)
 
-  const {
-    data: employee,
-    isLoading: isLoadingEmployee,
-    isError: isErrorEmployee,
-  } = useQuery({
-    queryKey: ['employee', id],
-    queryFn: () => fetchEmployee(id),
-    enabled: !!id,
-  })
+  useEffect(() => {
+    const loadOffices = async () => {
+      try {
+        const officesData = await fetchOffices()
+        setOffices(officesData)
+        setLoadingOffices(false)
+      } catch (error) {
+        setErrorOffices(error.message)
+        setLoadingOffices(false)
+      }
+    }
+
+    loadOffices()
+  }, [])
+
+  useEffect(() => {
+    const loadEmployee = async () => {
+      if (id) {
+        try {
+          const employeeData = await fetchEmployee(id)
+          setEmployee(employeeData)
+          setLoadingEmployee(false)
+        } catch (error) {
+          setErrorEmployee(error.message)
+          setLoadingEmployee(false)
+        }
+      }
+    }
+
+    loadEmployee()
+  }, [id])
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -103,7 +122,6 @@ export default function EditEmployeeForm() {
 
   useEffect(() => {
     if (employee) {
-      console.log('🚀 ~ useEffect ~ employee:', employee)
       form.reset({
         name: employee.name,
         position: employee.position,
@@ -113,41 +131,35 @@ export default function EditEmployeeForm() {
     }
   }, [employee, form])
 
-  const mutation = useMutation({
-    mutationFn: (data) => updateEmployee(id, data),
-    onSuccess: () => {
+  const onSubmit = async (data) => {
+    try {
+      await updateEmployee(id, data)
       toast({
         title: 'Berhasil!',
         description: 'Data karyawan berhasil diperbarui.',
         variant: 'success',
       })
       router.push('/karyawan')
-    },
-    onError: () => {
+    } catch (error) {
       toast({
         title: 'Gagal!',
         description: 'Terjadi kesalahan saat memperbarui karyawan.',
         variant: 'destructive',
       })
-    },
-  })
-
-  const onSubmit = (data) => {
-    // mutation.mutate({ ...data, officeId: Number(data.officeId) })
-    console.log('PLOY', data)
+    }
   }
 
   return (
     <Container>
       <h2 className="text-xl font-bold">Edit Karyawan</h2>
 
-      {isLoadingEmployee || isLoadingOffices ? <p>Loading data...</p> : null}
-      {isErrorEmployee || isErrorOffices ? <p>Gagal mengambil data</p> : null}
+      {loadingEmployee || loadingOffices ? <p>Loading data...</p> : null}
+      {errorEmployee || errorOffices ? <p>Gagal mengambil data</p> : null}
 
-      {!isLoadingEmployee &&
-        !isErrorEmployee &&
-        !isLoadingOffices &&
-        !isErrorOffices && (
+      {!loadingEmployee &&
+        !loadingOffices &&
+        !errorEmployee &&
+        !errorOffices && (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -196,10 +208,7 @@ export default function EditEmployeeForm() {
                   <FormItem>
                     <FormLabel>Kantor</FormLabel>
                     <Select
-                      onValueChange={(value) => {
-                        console.log('🚀 ~ EditEmployeeForm ~ value:', value)
-                        field.onChange(value)
-                      }}
+                      onValueChange={(value) => field.onChange(value)}
                       value={field.value}
                     >
                       <FormControl>
@@ -229,12 +238,8 @@ export default function EditEmployeeForm() {
                     Batal
                   </Button>
                 </Link>
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={mutation.isPending}
-                >
-                  {mutation.isPending ? 'Loading...' : 'Simpan'}
+                <Button type="submit" className="w-full">
+                  Simpan
                 </Button>
               </div>
             </form>
