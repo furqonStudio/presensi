@@ -1,12 +1,15 @@
-import { useEffect } from 'react'
 import { MapContainer, TileLayer, Marker, Circle, useMap } from 'react-leaflet'
 import L from 'leaflet'
+import { Office } from './office-table'
+import { useQuery } from '@tanstack/react-query'
 
-export const kantorLocations = [
-  { lat: -6.2, lng: 106.816, name: 'Kantor Pusat' },
-  { lat: -6.202, lng: 106.819, name: 'Cabang A' },
-  { lat: -6.96981512720424, lng: 109.520950913429, name: 'Kwigaran' },
-]
+async function fetchOffices(): Promise<Office[]> {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/offices`)
+  if (!response.ok) {
+    throw new Error('Network response was not ok')
+  }
+  return response.json()
+}
 
 const customIcon = new L.Icon({
   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
@@ -17,18 +20,21 @@ const customIcon = new L.Icon({
   shadowSize: [41, 41],
 })
 
-// Komponen untuk memperbarui posisi peta ke lokasi pengguna
-function RecenterMap({ location }) {
-  const map = useMap()
-  useEffect(() => {
-    if (location?.lat && location?.lng) {
-      map.setView([location.lat, location.lng], 16) // Zoom level 16
-    }
-  }, [location, map])
-  return null
-}
-
 export function PresensiMap({ userLocation }) {
+  const {
+    data: offices,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Office[], Error>({
+    queryKey: ['offices'],
+    queryFn: fetchOffices,
+  })
+
+  if (isLoading) return <div>Loading...</div>
+  if (isError && error instanceof Error)
+    return <div>Error: {error.message}</div>
+
   return (
     <MapContainer
       center={[userLocation.lat, userLocation.lng]}
@@ -36,13 +42,12 @@ export function PresensiMap({ userLocation }) {
       className="h-[300px] w-full rounded-lg"
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <RecenterMap location={userLocation} />
 
-      {kantorLocations.map((kantor, index) => (
+      {offices?.map((office, index) => (
         <>
           <Circle
             key={`circle-${index}`}
-            center={[kantor.lat, kantor.lng]}
+            center={[office.latitude, office.longitude]}
             radius={30}
             color="blue"
           />

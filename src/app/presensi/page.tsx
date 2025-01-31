@@ -118,41 +118,22 @@ export default function PresensiPage() {
           <TabsTrigger value="pulang">Pulang</TabsTrigger>
         </TabsList>
         <TabsContent value="masuk">
-          <PresensiForm
-            form={form}
-            onSubmit={onSubmit}
-            location={location}
-            getCurrentLocation={getCurrentLocation}
-          />
+          <PresensiForm form={form} onSubmit={onSubmit} location={location} />
         </TabsContent>
         <TabsContent value="pulang">
-          <PresensiForm
-            form={form}
-            onSubmit={onSubmit}
-            location={location}
-            getCurrentLocation={getCurrentLocation}
-          />
+          <PresensiForm form={form} onSubmit={onSubmit} location={location} />
         </TabsContent>
       </Tabs>
     </div>
   )
 }
 
-function PresensiForm({ form, onSubmit, location, getCurrentLocation }) {
+function PresensiForm({ form, onSubmit, location }) {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
       <Input placeholder="Employee ID" {...form.register('employeeId')} />
       <Card>
-        <CardContent>
-          <PresensiMap userLocation={location} />
-          <Button
-            type="button"
-            onClick={getCurrentLocation}
-            className="mt-2 w-full"
-          >
-            Dapatkan Lokasi Sekarang
-          </Button>
-        </CardContent>
+        <PresensiMap userLocation={location} />
       </Card>
       <Button type="submit" className="w-full">
         Presensi
