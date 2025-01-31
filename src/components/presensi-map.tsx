@@ -1,19 +1,11 @@
-import { MapContainer, TileLayer, Marker, Circle, useMap } from 'react-leaflet'
-import L from 'leaflet'
+import { MapContainer, TileLayer, Marker, Circle } from 'react-leaflet'
 import { useQuery } from '@tanstack/react-query'
 import { Office } from '@/types/office'
 import { fetchOffices } from '@/services/officeServices'
+import { UserLocation } from '@/types/location'
+import { customIcon } from '@/lib/mapUtils'
 
-const customIcon = new L.Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-  shadowSize: [41, 41],
-})
-
-export function PresensiMap({ userLocation }) {
+export function PresensiMap({ userLocation }: { userLocation: UserLocation }) {
   const {
     data: offices,
     isLoading,
