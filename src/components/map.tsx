@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import {
   MapContainer,
   TileLayer,
@@ -12,19 +12,13 @@ import L from 'leaflet'
 export function Map({
   initialCoordinates = [-6.2088, 106.8456], // Default ke Jakarta
   onCoordinateSelect,
-  mode = 'view', // 'select', 'view', atau 'presensi'
+  mode = 'view', // 'select' atau 'view'
 }: {
   initialCoordinates?: [number, number]
   onCoordinateSelect?: (lat: number, lng: number) => void
-  mode?: 'select' | 'view' | 'presensi' // Menambahkan mode presensi
+  mode?: 'select' | 'view' // Mode untuk menentukan apakah memilih koordinat atau hanya melihat
 }) {
   const [position, setPosition] = useState<[number, number]>(initialCoordinates)
-  const [userPosition, setUserPosition] = useState<[number, number] | null>(
-    null,
-  )
-
-  // Menambahkan lokasi kantor untuk radius presensi
-  const officeCoordinates = [-6.2088, 106.8456] // Misalnya lokasi kantor
 
   // Membuat ikon marker kustom
   const customIcon = new L.Icon({
@@ -48,55 +42,29 @@ export function Map({
       },
     })
 
-    return (
+    return position ? (
       <>
-        {position && (
-          <Marker position={position} icon={customIcon}>
-            <Popup>
-              Koordinat: {position[0]}, {position[1]}
-            </Popup>
-          </Marker>
-        )}
+        <Marker position={position} icon={customIcon}>
+          <Popup>
+            Koordinat: {position[0]}, {position[1]}
+          </Popup>
+        </Marker>
 
-        {userPosition && (
-          <Marker position={userPosition} icon={customIcon}>
-            <Popup>
-              Lokasi Pengguna: {userPosition[0]}, {userPosition[1]}
-            </Popup>
-          </Marker>
-        )}
-
-        {mode === 'presensi' && userPosition && (
-          <Circle
-            center={officeCoordinates} // Pusat lingkaran di lokasi kantor
-            radius={50} // Radius dalam meter
-            color="green" // Warna garis lingkaran
-            fillColor="green" // Warna isi lingkaran
-            fillOpacity={0.3} // Opasitas warna isi lingkaran
-          />
-        )}
+        <Circle
+          center={position} // Pusat lingkaran di posisi marker
+          radius={30} // Radius dalam meter
+          color="blue" // Warna garis lingkaran
+          fillColor="blue" // Warna isi lingkaran
+          fillOpacity={0.3} // Opasitas warna isi lingkaran
+        />
       </>
-    )
+    ) : null
   }
-
-  // Mengambil lokasi pengguna jika mode 'presensi'
-  useEffect(() => {
-    if (mode === 'presensi' && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserPosition([position.coords.latitude, position.coords.longitude])
-        },
-        (error) => {
-          console.error('Error getting user location:', error)
-        },
-      )
-    }
-  }, [mode])
 
   return (
     <MapContainer
       center={position}
-      zoom={mode === 'view' || 'presensi' ? 30 : 15} // Zoom berbeda antara mode 'view' dan 'select'
+      zoom={mode === 'view' ? 30 : 15} // Zoom berbeda antara mode 'view' dan 'select'
       style={{ height: '300px', width: '100%' }}
       scrollWheelZoom={true} // Mengaktifkan zoom scroll
       dragging={mode === 'view'} // Menonaktifkan drag map di mode 'view'
