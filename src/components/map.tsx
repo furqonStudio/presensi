@@ -63,7 +63,7 @@ export function Map({
     <MapContainer
       center={position}
       zoom={mode === 'view' ? 30 : 15}
-      style={{ height: '300px', width: '100%' }}
+      className="z-0 h-[300px] w-full rounded-lg"
       scrollWheelZoom={true}
       dragging={mode === 'view'}
     >

@@ -24,7 +24,7 @@ export function PresensiMap({ userLocation }: { userLocation: UserLocation }) {
     <MapContainer
       center={[userLocation.latitude, userLocation.longitude]}
       zoom={16}
-      className="h-[300px] w-full rounded-lg"
+      className="z-0 h-[300px] w-full rounded-lg"
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
