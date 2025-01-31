@@ -15,13 +15,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/hooks/use-toast'
 import { getCurrentLocation } from '@/lib/locationUtils'
 import { createAttendance } from '@/services/attendanceServices'
+import { updateClockOut } from '@/services/attendanceServices'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-// Skema validasi dengan Zod
 const formSchema = z.object({
   employeeId: z.string().min(3, { message: 'Employee ID minimal 3 karakter' }),
 })
@@ -30,7 +30,6 @@ export default function PresensiPage() {
   const [location, setLocation] = useState({ latitude: 0, longitude: 0 })
   const { toast } = useToast()
 
-  // Get current location
   useEffect(() => {
     getCurrentLocation(setLocation, (errorMessage) => {
       toast({
@@ -46,13 +45,13 @@ export default function PresensiPage() {
     defaultValues: { employeeId: '' },
   })
 
-  const mutation = useMutation({
+  const clockInMutation = useMutation({
     mutationFn: ({ employeeId, latitude, longitude }) =>
       createAttendance({ employeeId, latitude, longitude }),
     onSuccess: () => {
       toast({
         title: 'Presensi Berhasil!',
-        description: 'Anda berhasil melakukan presensi.',
+        description: 'Anda berhasil melakukan presensi masuk.',
       })
     },
     onError: (error) => {
@@ -64,8 +63,26 @@ export default function PresensiPage() {
     },
   })
 
-  const onSubmit = (data) => {
-    console.log('🚀 ~ onSubmit ~ data:', data)
+  const clockOutMutation = useMutation({
+    mutationFn: ({ employeeId, latitude, longitude }) =>
+      updateClockOut({ employeeId, latitude, longitude }),
+    onSuccess: () => {
+      toast({
+        title: 'Presensi Pulang Berhasil!',
+        description: 'Anda berhasil melakukan presensi pulang.',
+      })
+    },
+    onError: (error) => {
+      toast({
+        title: 'Gagal melakukan presensi pulang',
+        description: error.message,
+        variant: 'destructive',
+      })
+    },
+  })
+
+  const onSubmit = (data, type: 'masuk' | 'pulang') => {
+    const mutation = type === 'masuk' ? clockInMutation : clockOutMutation
 
     mutation.mutate({
       ...data,
@@ -84,17 +101,17 @@ export default function PresensiPage() {
         <TabsContent value="masuk">
           <PresensiForm
             form={form}
-            onSubmit={onSubmit}
+            onSubmit={(data) => onSubmit(data, 'masuk')}
             location={location}
-            mutation={mutation}
+            mutation={clockInMutation}
           />
         </TabsContent>
         <TabsContent value="pulang">
           <PresensiForm
             form={form}
-            onSubmit={onSubmit}
+            onSubmit={(data) => onSubmit(data, 'pulang')}
             location={location}
-            mutation={mutation}
+            mutation={clockOutMutation}
           />
         </TabsContent>
       </Tabs>
@@ -122,8 +139,8 @@ function PresensiForm({ form, onSubmit, location, mutation }) {
           <PresensiMap userLocation={location} />
         </Card>
 
-        <Button type="submit" className="w-full" disabled={mutation.isLoading}>
-          {mutation.isLoading ? 'Loading...' : 'Presensi'}
+        <Button type="submit" className="w-full" disabled={mutation.isPending}>
+          {mutation.isPending ? 'Loading...' : 'Presensi'}
         </Button>
       </form>
     </Form>
