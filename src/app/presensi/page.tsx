@@ -18,7 +18,7 @@ const formSchema = z.object({
 })
 
 export default function PresensiPage() {
-  const [location, setLocation] = useState({ lat: 0, lng: 0 })
+  const [location, setLocation] = useState({ latitude: 0, longitude: 0 })
   const { toast } = useToast()
 
   const {
@@ -39,7 +39,10 @@ export default function PresensiPage() {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude })
+          setLocation({
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude,
+          })
           toast({
             title: 'Lokasi berhasil diperbarui!',
             description: `Lokasi sekarang: ${pos.coords.latitude}, ${pos.coords.longitude}`,
@@ -91,8 +94,8 @@ export default function PresensiPage() {
     return offices.reduce(
       (nearest, office) => {
         const distance = getDistance(
-          location.lat,
-          location.lng,
+          location.latitude,
+          location.longitude,
           office.latitude,
           office.longitude,
         )
@@ -101,8 +104,8 @@ export default function PresensiPage() {
       {
         office: offices[0],
         distance: getDistance(
-          location.lat,
-          location.lng,
+          location.latitude,
+          location.longitude,
           offices[0].latitude,
           offices[0].longitude,
         ),
@@ -127,8 +130,8 @@ export default function PresensiPage() {
     }
 
     const distance = getDistance(
-      location.lat,
-      location.lng,
+      location.latitude,
+      location.longitude,
       nearestOffice.latitude,
       nearestOffice.longitude,
     )
@@ -145,7 +148,7 @@ export default function PresensiPage() {
     console.log('Presensi:', { ...data, location })
     toast({
       title: 'Presensi Berhasil!',
-      description: `Lokasi: ${location.lat}, ${location.lng}`,
+      description: `Lokasi: ${location.latitude}, ${location.longitude}`,
     })
   }
 

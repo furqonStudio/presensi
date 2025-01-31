@@ -22,7 +22,7 @@ export function PresensiMap({ userLocation }: { userLocation: UserLocation }) {
 
   return (
     <MapContainer
-      center={[userLocation.lat, userLocation.lng]}
+      center={[userLocation.latitude, userLocation.longitude]}
       zoom={16}
       className="h-[300px] w-full rounded-lg"
     >
@@ -39,10 +39,10 @@ export function PresensiMap({ userLocation }: { userLocation: UserLocation }) {
         </>
       ))}
 
-      {userLocation?.lat && userLocation?.lng && (
+      {userLocation?.latitude && userLocation?.longitude && (
         <>
           <Marker
-            position={[userLocation.lat, userLocation.lng]}
+            position={[userLocation.latitude, userLocation.longitude]}
             icon={customIcon}
           />
         </>

@@ -1,4 +1,4 @@
 export type UserLocation = {
-  lat: number
-  lng: number
+  latitude: number
+  longitude: number
 }
