@@ -1,4 +1,5 @@
 'use client'
+
 import { useState, useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -12,6 +13,18 @@ import { PresensiMap } from '@/components/presensi-map'
 import { useQuery } from '@tanstack/react-query'
 import { Office } from '@/types/office'
 import { fetchOffices } from '@/services/officeServices'
+import {
+  getCurrentLocation,
+  getDistance,
+  findNearestOffice,
+} from '@/lib/locationUtils'
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 
 const formSchema = z.object({
   employeeId: z.string().min(3, { message: 'Employee ID minimal 3 karakter' }),
@@ -32,86 +45,14 @@ export default function PresensiPage() {
   })
 
   useEffect(() => {
-    getCurrentLocation()
-  }, [])
-
-  const getCurrentLocation = () => {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setLocation({
-            latitude: pos.coords.latitude,
-            longitude: pos.coords.longitude,
-          })
-          toast({
-            title: 'Lokasi berhasil diperbarui!',
-            description: `Lokasi sekarang: ${pos.coords.latitude}, ${pos.coords.longitude}`,
-          })
-        },
-        (error) => {
-          toast({
-            title: 'Gagal mendapatkan lokasi',
-            description: 'Pastikan GPS aktif dan beri izin lokasi.',
-            variant: 'destructive',
-          })
-          console.error('Error mendapatkan lokasi:', error)
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0,
-        },
-      )
-    } else {
+    getCurrentLocation(setLocation, (errorMessage) => {
       toast({
-        title: 'Geolocation tidak tersedia',
-        description: 'Browser tidak mendukung fitur lokasi.',
+        title: 'Gagal mendapatkan lokasi',
+        description: errorMessage,
         variant: 'destructive',
       })
-    }
-  }
-
-  const getDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371000
-    const phi1 = (lat1 * Math.PI) / 180
-    const phi2 = (lat2 * Math.PI) / 180
-    const deltaPhi = ((lat2 - lat1) * Math.PI) / 180
-    const deltaLambda = ((lon2 - lon1) * Math.PI) / 180
-
-    const a =
-      Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
-      Math.cos(phi1) *
-        Math.cos(phi2) *
-        Math.sin(deltaLambda / 2) *
-        Math.sin(deltaLambda / 2)
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-    return R * c
-  }
-
-  const findNearestOffice = () => {
-    if (!offices || offices.length === 0) return null
-
-    return offices.reduce(
-      (nearest, office) => {
-        const distance = getDistance(
-          location.latitude,
-          location.longitude,
-          office.latitude,
-          office.longitude,
-        )
-        return distance < nearest.distance ? { office, distance } : nearest
-      },
-      {
-        office: offices[0],
-        distance: getDistance(
-          location.latitude,
-          location.longitude,
-          offices[0].latitude,
-          offices[0].longitude,
-        ),
-      },
-    ).office
-  }
+    })
+  }, [])
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -119,7 +60,7 @@ export default function PresensiPage() {
   })
 
   const onSubmit = (data) => {
-    const nearestOffice = findNearestOffice()
+    const nearestOffice = findNearestOffice(offices ?? [], location)
     if (!nearestOffice) {
       toast({
         title: 'Gagal menemukan kantor',
@@ -145,7 +86,6 @@ export default function PresensiPage() {
       return
     }
 
-    console.log('Presensi:', { ...data, location })
     toast({
       title: 'Presensi Berhasil!',
       description: `Lokasi: ${location.latitude}, ${location.longitude}`,
@@ -176,14 +116,28 @@ export default function PresensiPage() {
 
 function PresensiForm({ form, onSubmit, location }) {
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-      <Input placeholder="Employee ID" {...form.register('employeeId')} />
-      <Card>
-        <PresensiMap userLocation={location} />
-      </Card>
-      <Button type="submit" className="w-full">
-        Presensi
-      </Button>
-    </form>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="employeeId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>ID Karyawan</FormLabel>
+              <Input placeholder="Masukkan ID Karyawan" {...field} />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Card>
+          <PresensiMap userLocation={location} />
+        </Card>
+
+        <Button type="submit" className="w-full">
+          Presensi
+        </Button>
+      </form>
+    </Form>
   )
 }
