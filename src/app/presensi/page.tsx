@@ -1,23 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { Input } from '@/components/ui/input'
-import { Card } from '@/components/ui/card'
-import { toast, useToast } from '@/hooks/use-toast'
 import { PresensiMap } from '@/components/presensi-map'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { Office } from '@/types/office'
-import { fetchOffices } from '@/services/officeServices'
-import {
-  getCurrentLocation,
-  getDistance,
-  findNearestOffice,
-} from '@/lib/locationUtils'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import {
   Form,
   FormField,
@@ -25,7 +10,16 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useToast } from '@/hooks/use-toast'
+import { getCurrentLocation } from '@/lib/locationUtils'
 import { createAttendance } from '@/services/attendanceServices'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 // Skema validasi dengan Zod
 const formSchema = z.object({
@@ -35,17 +29,6 @@ const formSchema = z.object({
 export default function PresensiPage() {
   const [location, setLocation] = useState({ latitude: 0, longitude: 0 })
   const { toast } = useToast()
-
-  // Fetch data kantor (offices)
-  const {
-    data: offices,
-    isLoading,
-    isError,
-    error,
-  } = useQuery<Office[], Error>({
-    queryKey: ['offices'],
-    queryFn: fetchOffices,
-  })
 
   // Get current location
   useEffect(() => {
@@ -75,8 +58,7 @@ export default function PresensiPage() {
     onError: (error) => {
       toast({
         title: 'Gagal melakukan presensi',
-        description:
-          error instanceof Error ? error.message : 'Terjadi kesalahan',
+        description: error.message,
         variant: 'destructive',
       })
     },
@@ -84,31 +66,6 @@ export default function PresensiPage() {
 
   const onSubmit = (data) => {
     console.log('🚀 ~ onSubmit ~ data:', data)
-    const nearestOffice = findNearestOffice(offices ?? [], location)
-    if (!nearestOffice) {
-      toast({
-        title: 'Gagal menemukan kantor',
-        description: 'Pastikan data kantor tersedia.',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    const distance = getDistance(
-      location.latitude,
-      location.longitude,
-      nearestOffice.latitude,
-      nearestOffice.longitude,
-    )
-
-    if (distance > 30) {
-      toast({
-        title: 'Lokasi terlalu jauh',
-        description: `Anda berada ${distance.toFixed(2)} meter dari kantor terdekat (${nearestOffice.name}).`,
-        variant: 'destructive',
-      })
-      return
-    }
 
     mutation.mutate({
       ...data,
@@ -116,10 +73,6 @@ export default function PresensiPage() {
       longitude: location.longitude,
     })
   }
-
-  if (isLoading) return <div>Loading...</div>
-  if (isError && error instanceof Error)
-    return <div>Error: {error.message}</div>
 
   return (
     <div className="container mx-auto p-4">
