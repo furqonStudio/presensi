@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { Container } from '@/components/container'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { formatToWIB } from '@/lib/dateTimeUtils'
 
 async function fetchShift(id: string) {
   const response = await fetch(
@@ -42,10 +43,10 @@ export default function ShiftDetail() {
           <strong>Nama Shift:</strong> {shift.name}
         </p>
         <p>
-          <strong>Jam Masuk:</strong> {shift.clockIn}
+          <strong>Jam Masuk:</strong> {formatToWIB(shift.clockIn)}
         </p>
         <p>
-          <strong>Jam Keluar:</strong> {shift.clockOut}
+          <strong>Jam Keluar:</strong> {formatToWIB(shift.clockOut)}
         </p>
       </div>
       <div className="mt-4">

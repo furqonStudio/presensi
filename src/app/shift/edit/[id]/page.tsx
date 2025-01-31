@@ -1,8 +1,7 @@
 'use client'
-
 import { useEffect, useState } from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,12 +14,11 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Container } from '@/components/container'
-import { useMutation } from '@tanstack/react-query'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
+import { formatClockTimes, parseClockTimes } from '@/lib/dateTimeUtils'
 
-// Skema validasi dengan Zod
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Nama shift minimal 2 karakter.' }),
   clockIn: z.string().refine((val) => /\d{2}:\d{2}/.test(val), {
@@ -31,7 +29,6 @@ const formSchema = z.object({
   }),
 })
 
-// Fungsi mengambil data shift
 async function fetchShift(id: string) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/shifts/${id}`,
@@ -42,7 +39,6 @@ async function fetchShift(id: string) {
   return response.json()
 }
 
-// Fungsi memperbarui shift
 async function updateShift(id: string, data: any) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/shifts/${id}`,
@@ -71,7 +67,8 @@ export default function EditShiftForm() {
     const loadShift = async () => {
       try {
         const shiftData = await fetchShift(id)
-        setShift(shiftData)
+        const formattedShift = parseClockTimes(shiftData)
+        setShift(formattedShift)
         setLoading(false)
       } catch (error) {
         setError(error.message)
@@ -102,7 +99,8 @@ export default function EditShiftForm() {
   }, [shift, form])
 
   const onSubmit = (data: any) => {
-    updateShift(id, data)
+    const formatedData = formatClockTimes(data)
+    updateShift(id, formatedData)
       .then(() => {
         toast({
           title: 'Berhasil!',
@@ -151,7 +149,7 @@ export default function EditShiftForm() {
                   <FormItem className="flex-1">
                     <FormLabel>Waktu Mulai</FormLabel>
                     <FormControl>
-                      <Input type="time" {...field} />
+                      <Input type="time" {...field} className="flex flex-col" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -164,7 +162,7 @@ export default function EditShiftForm() {
                   <FormItem className="flex-1">
                     <FormLabel>Waktu Selesai</FormLabel>
                     <FormControl>
-                      <Input type="time" {...field} />
+                      <Input type="time" {...field} className="flex flex-col" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

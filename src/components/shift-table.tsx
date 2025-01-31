@@ -54,6 +54,7 @@ import { DataTablePagination } from './data-table-pagination'
 import Link from 'next/link'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from '@/hooks/use-toast'
+import { formatToWIB } from '@/lib/dateTimeUtils'
 
 const deleteShift = async (id: string) => {
   const response = await fetch(
@@ -96,16 +97,18 @@ export const columns: ColumnDef<Shift>[] = [
   {
     accessorKey: 'clockIn',
     header: 'Jam Masuk',
-    cell: ({ row }) => (
-      <div>{row.getValue('clockIn')}</div> // Menampilkan jam masuk sebagai string biasa
-    ),
+    cell: ({ row }) => {
+      const clockIn = row.getValue('clockIn')
+      return <div>{formatToWIB(clockIn)}</div>
+    },
   },
   {
     accessorKey: 'clockOut',
     header: 'Jam Keluar',
-    cell: ({ row }) => (
-      <div>{row.getValue('clockOut')}</div> // Menampilkan jam keluar sebagai string biasa
-    ),
+    cell: ({ row }) => {
+      const clockOut = row.getValue('clockOut')
+      return <div>{formatToWIB(clockOut)}</div>
+    },
   },
   {
     id: 'actions',

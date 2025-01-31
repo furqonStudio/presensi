@@ -18,6 +18,7 @@ import { Container } from '@/components/container'
 import { useMutation } from '@tanstack/react-query'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
+import { formatClockTimes } from '@/lib/dateTimeUtils'
 
 // Skema validasi dengan Zod untuk Shift
 const formSchema = z.object({
@@ -78,8 +79,9 @@ export default function AddShiftForm() {
   })
 
   const onSubmit = (data: any) => {
-    mutation.mutate(data)
-    console.log('🚀 ~ onSubmit ~ data:', data)
+    const shiftData = formatClockTimes(data)
+
+    mutation.mutate(shiftData)
   }
 
   return (
