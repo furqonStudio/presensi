@@ -1,15 +1,8 @@
 import { MapContainer, TileLayer, Marker, Circle, useMap } from 'react-leaflet'
 import L from 'leaflet'
-import { Office } from './office-table'
 import { useQuery } from '@tanstack/react-query'
-
-async function fetchOffices(): Promise<Office[]> {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/offices`)
-  if (!response.ok) {
-    throw new Error('Network response was not ok')
-  }
-  return response.json()
-}
+import { Office } from '@/types/office'
+import { fetchOffices } from '@/services/officeServices'
 
 const customIcon = new L.Icon({
   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',

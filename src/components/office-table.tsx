@@ -55,28 +55,8 @@ import { DataTablePagination } from './data-table-pagination'
 import Link from 'next/link'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from '@/hooks/use-toast'
-
-const deleteOffice = async (id: string) => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/offices/${id}`,
-    {
-      method: 'DELETE',
-    },
-  )
-
-  if (!response.ok) {
-    throw new Error('Failed to delete office')
-  }
-
-  return id
-}
-
-export type Office = {
-  id: string
-  name: string
-  address: string
-  description: string
-}
+import { Office } from '@/types/office'
+import { deleteOffice } from '@/services/officeServices'
 
 export const columns: ColumnDef<Office>[] = [
   {
@@ -113,7 +93,7 @@ export const columns: ColumnDef<Office>[] = [
       const mutation = useMutation({
         mutationFn: (officeId: string) => deleteOffice(officeId),
         onSuccess: () => {
-          queryClient.invalidateQueries(['offices']) // To refetch the list of offices after deletion
+          queryClient.invalidateQueries(['offices'])
           toast({
             title: 'Berhasil!',
             description: 'Kantor berhasil dihapus.',

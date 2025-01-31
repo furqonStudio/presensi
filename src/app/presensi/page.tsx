@@ -6,15 +6,12 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { useToast } from '@/hooks/use-toast'
 import { PresensiMap } from '@/components/presensi-map'
-
-const kantorLocation = {
-  lat: -6.96981512720424,
-  lng: 109.520950913429,
-  name: 'Kwigaran',
-}
+import { useQuery } from '@tanstack/react-query'
+import { Office } from '@/types/office'
+import { fetchOffices } from '@/services/officeServices'
 
 const formSchema = z.object({
   employeeId: z.string().min(3, { message: 'Employee ID minimal 3 karakter' }),
@@ -23,6 +20,16 @@ const formSchema = z.object({
 export default function PresensiPage() {
   const [location, setLocation] = useState({ lat: 0, lng: 0 })
   const { toast } = useToast()
+
+  const {
+    data: offices,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Office[], Error>({
+    queryKey: ['offices'],
+    queryFn: fetchOffices,
+  })
 
   useEffect(() => {
     getCurrentLocation()
@@ -75,9 +82,32 @@ export default function PresensiPage() {
         Math.sin(deltaLambda / 2) *
         Math.sin(deltaLambda / 2)
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-    const distance = R * c
+    return R * c
+  }
 
-    return distance
+  const findNearestOffice = () => {
+    if (!offices || offices.length === 0) return null
+
+    return offices.reduce(
+      (nearest, office) => {
+        const distance = getDistance(
+          location.lat,
+          location.lng,
+          office.latitude,
+          office.longitude,
+        )
+        return distance < nearest.distance ? { office, distance } : nearest
+      },
+      {
+        office: offices[0],
+        distance: getDistance(
+          location.lat,
+          location.lng,
+          offices[0].latitude,
+          offices[0].longitude,
+        ),
+      },
+    ).office
   }
 
   const form = useForm({
@@ -86,18 +116,27 @@ export default function PresensiPage() {
   })
 
   const onSubmit = (data) => {
-    // Cek apakah jarak lebih dari 30 meter
+    const nearestOffice = findNearestOffice()
+    if (!nearestOffice) {
+      toast({
+        title: 'Gagal menemukan kantor',
+        description: 'Pastikan data kantor tersedia.',
+        variant: 'destructive',
+      })
+      return
+    }
+
     const distance = getDistance(
       location.lat,
       location.lng,
-      kantorLocation.lat,
-      kantorLocation.lng,
+      nearestOffice.latitude,
+      nearestOffice.longitude,
     )
 
     if (distance > 30) {
       toast({
         title: 'Lokasi terlalu jauh',
-        description: `Anda berada ${distance.toFixed(2)} meter dari kantor. Pastikan Anda berada dalam radius 30 meter.`,
+        description: `Anda berada ${distance.toFixed(2)} meter dari kantor terdekat (${nearestOffice.name}).`,
         variant: 'destructive',
       })
       return
@@ -109,6 +148,10 @@ export default function PresensiPage() {
       description: `Lokasi: ${location.lat}, ${location.lng}`,
     })
   }
+
+  if (isLoading) return <div>Loading...</div>
+  if (isError && error instanceof Error)
+    return <div>Error: {error.message}</div>
 
   return (
     <div className="container mx-auto p-4">
