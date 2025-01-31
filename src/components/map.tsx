@@ -5,22 +5,21 @@ import {
   Marker,
   Popup,
   useMapEvents,
-  Circle, // Impor Circle untuk menggambar radius
+  Circle,
 } from 'react-leaflet'
 import L from 'leaflet'
 
 export function Map({
-  initialCoordinates = [-6.2088, 106.8456], // Default ke Jakarta
+  initialCoordinates = [-6.2088, 106.8456],
   onCoordinateSelect,
-  mode = 'view', // 'select' atau 'view'
+  mode = 'view',
 }: {
   initialCoordinates?: [number, number]
   onCoordinateSelect?: (lat: number, lng: number) => void
-  mode?: 'select' | 'view' // Mode untuk menentukan apakah memilih koordinat atau hanya melihat
+  mode?: 'select' | 'view'
 }) {
   const [position, setPosition] = useState<[number, number]>(initialCoordinates)
 
-  // Membuat ikon marker kustom
   const customIcon = new L.Icon({
     iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
     iconSize: [25, 41],
@@ -30,14 +29,13 @@ export function Map({
     shadowSize: [41, 41],
   })
 
-  // Menangani event klik peta untuk memilih koordinat baru jika mode 'select'
   function LocationMarker() {
     useMapEvents({
       click(e) {
         if (mode === 'select') {
           const { lat, lng } = e.latlng
-          setPosition([lat, lng]) // Memperbarui posisi berdasarkan klik
-          if (onCoordinateSelect) onCoordinateSelect(lat, lng) // Memanggil callback jika ada
+          setPosition([lat, lng])
+          if (onCoordinateSelect) onCoordinateSelect(lat, lng)
         }
       },
     })
@@ -51,11 +49,11 @@ export function Map({
         </Marker>
 
         <Circle
-          center={position} // Pusat lingkaran di posisi marker
-          radius={30} // Radius dalam meter
-          color="blue" // Warna garis lingkaran
-          fillColor="blue" // Warna isi lingkaran
-          fillOpacity={0.3} // Opasitas warna isi lingkaran
+          center={position}
+          radius={30}
+          color="blue"
+          fillColor="blue"
+          fillOpacity={0.3}
         />
       </>
     ) : null
@@ -64,10 +62,10 @@ export function Map({
   return (
     <MapContainer
       center={position}
-      zoom={mode === 'view' ? 30 : 15} // Zoom berbeda antara mode 'view' dan 'select'
+      zoom={mode === 'view' ? 30 : 15}
       style={{ height: '300px', width: '100%' }}
-      scrollWheelZoom={true} // Mengaktifkan zoom scroll
-      dragging={mode === 'view'} // Menonaktifkan drag map di mode 'view'
+      scrollWheelZoom={true}
+      dragging={mode === 'view'}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <LocationMarker />
