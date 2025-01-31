@@ -92,7 +92,14 @@ export default function PresensiPage() {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="flex h-screen flex-col items-center justify-center gap-6 p-4">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-center text-3xl font-bold">Presensi App</h1>
+        <p className="max-w-sm text-center text-sm text-muted-foreground">
+          Silahkan masukkan ID karyawan dan pastikan berada di radius kantor
+          maks. 30 meter.
+        </p>
+      </div>
       <Tabs defaultValue="masuk" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="masuk">Masuk</TabsTrigger>
