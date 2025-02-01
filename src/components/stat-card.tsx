@@ -19,7 +19,7 @@ const StatCard: React.FC<StatCardProps> = ({
         <div>{icon}</div>
         <div className="flex flex-col items-end">
           <CardTitle className="text-4xl font-bold">{count}</CardTitle>
-          <CardDescription>{label}</CardDescription>
+          <CardDescription className="text-background">{label}</CardDescription>
         </div>
       </div>
     </Card>

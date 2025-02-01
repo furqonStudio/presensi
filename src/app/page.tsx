@@ -1,29 +1,18 @@
-import { Container } from '@/components/container'
-import StatCard from '@/components/stat-card'
-import { Briefcase, Users } from 'lucide-react'
+'use client'
+import { useState } from 'react'
+import { LoginForm } from '@/components/login-form'
+import { RegisterForm } from '@/components/register-form'
 
 export default function Home() {
+  const [isRegister, setIsRegister] = useState(false)
+
   return (
-    <Container>
-      <div className="text-2xl font-bold">
-        <h1>Selamat Datang, lorem</h1>
-      </div>
-      <div className="flex flex-1 flex-col gap-4 pt-0">
-        <div className="grid grid-cols-1 gap-2">
-          <StatCard
-            icon={<Users className="size-8" />}
-            bgColor="bg-blue-500"
-            count={20}
-            label="Karyawan"
-          />
-          <StatCard
-            icon={<Briefcase className="size-8" />}
-            bgColor="bg-green-500"
-            count={2}
-            label="Kantor"
-          />
-        </div>
-      </div>
-    </Container>
+    <div className="flex h-full w-full items-center justify-center bg-gradient-to-tr from-green-950 to-blue-950 p-4">
+      {isRegister ? (
+        <RegisterForm className="w-96" onClick={() => setIsRegister(false)} />
+      ) : (
+        <LoginForm className="w-96" onClick={() => setIsRegister(true)} />
+      )}
+    </div>
   )
 }
