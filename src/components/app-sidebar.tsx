@@ -77,7 +77,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
             <GalleryVerticalEnd className="size-4" />
           </div>
-          <p className="truncate text-lg font-bold">Presensi App</p>
+          <p className="truncate text-lg font-bold">PRESENSI APP</p>
         </div>
       </SidebarHeader>
       <SidebarContent>
