@@ -83,16 +83,6 @@ export default function OfficeDetail() {
       )}
 
       <div className="mt-4">
-        <h3 className="text-lg font-semibold">Karyawan di Kantor Ini:</h3>
-        <ul className="list-disc pl-5">
-          {employees?.map((employee: any) => (
-            <li key={employee.id}>
-              <strong>{employee.name}</strong> - {employee.position}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="mt-4">
         <Link href="/kantor">
           <Button variant="secondary">Kembali</Button>
         </Link>

@@ -30,11 +30,11 @@ const OfficePage = () => {
     <Container>
       <div className="flex items-end justify-between">
         <h2 className="text-2xl font-bold">Daftar Shift</h2>
-        <Button asChild>
+        {/* <Button asChild>
           <Link href="/shift/add">
             <Plus /> Tambah
           </Link>
-        </Button>
+        </Button> */}
       </div>
       <ShiftTable data={data || []} />
     </Container>
