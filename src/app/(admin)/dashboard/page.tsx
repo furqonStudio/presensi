@@ -1,3 +1,4 @@
+import { AttendanceChart } from '@/components/attendance-chart'
 import { Container } from '@/components/container'
 import StatCard from '@/components/stat-card'
 import { Briefcase, Users } from 'lucide-react'
@@ -22,6 +23,7 @@ export default function Home() {
             count={2}
             label="Kantor"
           />
+          <AttendanceChart />
         </div>
       </div>
     </Container>

@@ -1,3 +1,5 @@
+'use client'
+
 import { AppSidebar } from '@/components/app-sidebar'
 import {
   Breadcrumb,
@@ -13,12 +15,18 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
+import { usePathname } from 'next/navigation'
 
 export default function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const pathname = usePathname()
+
+  // Pecah URL menjadi array & hapus elemen kosong
+  const pathSegments = pathname.split('/').filter((segment) => segment)
+
   return (
     <>
       <SidebarProvider>
@@ -30,14 +38,8 @@ export default function Layout({
               <Separator orientation="vertical" className="mr-2 h-4" />
               <Breadcrumb>
                 <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">
-                      Building Your Application
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
                   <BreadcrumbItem>
-                    <BreadcrumbPage>Dashboard</BreadcrumbPage>
+                    <BreadcrumbLink>{pathSegments}</BreadcrumbLink>
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
