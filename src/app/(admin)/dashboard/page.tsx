@@ -9,8 +9,8 @@ export default function Home() {
       <div className="text-2xl font-bold">
         <h1>Selamat Datang, lorem</h1>
       </div>
-      <div className="flex flex-1 flex-col gap-4 pt-0">
-        <div className="grid grid-cols-1 gap-2">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-1">
           <StatCard
             icon={<Users className="size-8" />}
             bgColor="bg-blue-500"
@@ -23,8 +23,8 @@ export default function Home() {
             count={2}
             label="Kantor"
           />
-          <AttendanceChart />
         </div>
+        <AttendanceChart />
       </div>
     </Container>
   )

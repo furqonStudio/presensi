@@ -14,7 +14,7 @@ const StatCard: React.FC<StatCardProps> = ({
   label,
 }) => {
   return (
-    <Card className={`p-6 ${bgColor}`}>
+    <Card className={`p-6 ${bgColor} h-full content-center`}>
       <div className="flex items-center justify-between text-white">
         <div>{icon}</div>
         <div className="flex flex-col items-end">
