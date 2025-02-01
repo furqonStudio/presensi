@@ -60,12 +60,12 @@ const data = {
         },
       ],
     },
-    {
-      title: 'Perusahaan',
-      url: '#',
-      icon: Building2,
-      isActive: false,
-    },
+    // {
+    //   title: 'Perusahaan',
+    //   url: '#',
+    //   icon: Building2,
+    //   isActive: false,
+    // },
   ],
 }
 

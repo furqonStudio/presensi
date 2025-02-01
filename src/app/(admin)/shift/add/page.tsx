@@ -65,7 +65,7 @@ export default function AddShiftForm() {
       toast({
         title: 'Berhasil!',
         description: 'Shift berhasil ditambahkan.',
-        variant: 'success',
+        variant: 'default',
       })
       router.push('/shift') // Sesuaikan dengan rute daftar shift Anda
     },

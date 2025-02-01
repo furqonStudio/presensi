@@ -125,7 +125,7 @@ export const columns: ColumnDef<Shift>[] = [
           toast({
             title: 'Berhasil!',
             description: 'Shift berhasil dihapus.',
-            variant: 'success',
+            variant: 'default',
           })
         },
         onError: () => {
@@ -153,9 +153,9 @@ export const columns: ColumnDef<Shift>[] = [
               <Link href={`/shift/edit/${shift.id}`}>
                 <DropdownMenuItem>Edit</DropdownMenuItem>
               </Link>
-              <DropdownMenuItem onSelect={() => setOpen(true)}>
+              {/* <DropdownMenuItem onSelect={() => setOpen(true)}>
                 Delete
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -224,7 +224,7 @@ export function ShiftTable({ data }: { data: Shift[] }) {
       <div className="flex flex-col gap-2">
         <div className="flex">
           <Input
-            placeholder="Filter shift names..."
+            placeholder="Cari nama shift..."
             value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
             onChange={(event) =>
               table.getColumn('name')?.setFilterValue(event.target.value)

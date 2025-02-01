@@ -89,7 +89,7 @@ export default function AddEmployeeForm() {
       toast({
         title: 'Berhasil!',
         description: 'Karyawan berhasil ditambahkan.',
-        variant: 'success',
+        variant: 'default',
       })
       router.push('/karyawan')
     },

@@ -142,7 +142,7 @@ export default function EditEmployeeForm() {
       toast({
         title: 'Berhasil!',
         description: 'Data karyawan berhasil diperbarui.',
-        variant: 'success',
+        variant: 'default',
       })
       router.push('/karyawan')
     } catch (error) {

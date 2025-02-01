@@ -97,7 +97,7 @@ export const columns: ColumnDef<Office>[] = [
           toast({
             title: 'Berhasil!',
             description: 'Kantor berhasil dihapus.',
-            variant: 'success',
+            variant: 'default',
           })
         },
         onError: () => {
@@ -196,7 +196,7 @@ export function OfficeTable({ data }: { data: Office[] }) {
       <div className="flex flex-col gap-2">
         <div className="flex">
           <Input
-            placeholder="Filter nama kantor..."
+            placeholder="Cari nama kantor..."
             value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
             onChange={(event) =>
               table.getColumn('name')?.setFilterValue(event.target.value)

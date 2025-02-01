@@ -71,7 +71,7 @@ export default function AddOfficeForm() {
       toast({
         title: 'Berhasil!',
         description: 'Kantor berhasil ditambahkan.',
-        variant: 'success',
+        variant: 'default',
       })
       router.push('/kantor') // Sesuaikan dengan rute daftar kantor Anda
     },

@@ -117,7 +117,7 @@ export const columns: ColumnDef<Employee>[] = [
           toast({
             title: 'Berhasil!',
             description: 'Karyawan berhasil dihapus.',
-            variant: 'success',
+            variant: 'default',
           })
         },
         onError: () => {
@@ -216,7 +216,7 @@ export function EmployeeTable({ data }: { data: Employee[] }) {
       <div className="flex flex-col gap-2">
         <div className="flex">
           <Input
-            placeholder="Filter names..."
+            placeholder="Cari nama karyawan..."
             value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
             onChange={(event) =>
               table.getColumn('name')?.setFilterValue(event.target.value)

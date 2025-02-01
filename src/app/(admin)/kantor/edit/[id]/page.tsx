@@ -129,7 +129,7 @@ export default function EditOfficeForm() {
         toast({
           title: 'Berhasil!',
           description: 'Kantor berhasil diperbarui.',
-          variant: 'success',
+          variant: 'default',
         })
         router.push('/kantor')
       })

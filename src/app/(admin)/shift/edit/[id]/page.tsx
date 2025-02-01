@@ -105,7 +105,7 @@ export default function EditShiftForm() {
         toast({
           title: 'Berhasil!',
           description: 'Shift berhasil diperbarui.',
-          variant: 'success',
+          variant: 'default',
         })
         router.push('/shift')
       })
