@@ -92,14 +92,21 @@ export default function PresensiPage() {
   }
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center gap-6 p-4">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-center text-3xl font-bold">Presensi App</h1>
+    <div className="flex h-full flex-col items-center justify-center gap-8 p-4">
+      <div className="relative flex flex-col gap-2">
+        <h1 className="text-center text-3xl font-black uppercase tracking-tighter">
+          Presensi App
+        </h1>
+
+        <span className="absolute left-6 top-0 -rotate-6 text-3xl">📱</span>
+        <span className="absolute right-6 top-0 rotate-6 text-3xl">🕗</span>
+
         <p className="max-w-sm text-center text-sm text-muted-foreground">
           Silahkan masukkan ID karyawan dan pastikan berada di radius kantor
-          maks. 30 meter.
+          maksimal 30 meter.
         </p>
       </div>
+
       <Tabs defaultValue="masuk" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="masuk">Masuk</TabsTrigger>
