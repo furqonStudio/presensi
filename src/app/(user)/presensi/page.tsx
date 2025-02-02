@@ -1,6 +1,6 @@
 'use client'
 
-import { PresensiMap } from '@/components/presensi-map'
+// import { PresensiMap } from '@/components/presensi-map'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import {
@@ -21,6 +21,11 @@ import { useMutation } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import dynamic from 'next/dynamic'
+
+const PresensiMap = dynamic(() => import('@/components/presensi-map'), {
+  ssr: false,
+})
 
 const formSchema = z.object({
   employeeId: z.string().min(3, { message: 'Employee ID minimal 3 karakter' }),

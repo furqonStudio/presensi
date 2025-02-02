@@ -18,7 +18,11 @@ import { Container } from '@/components/container'
 import { useMutation } from '@tanstack/react-query'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
-import { Map } from '@/components/map'
+import dynamic from 'next/dynamic'
+
+const Map = dynamic(() => import('@/components/map'), {
+  ssr: false,
+})
 
 // Skema validasi dengan Zod
 const formSchema = z.object({

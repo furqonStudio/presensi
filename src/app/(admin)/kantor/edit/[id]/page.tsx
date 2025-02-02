@@ -18,9 +18,12 @@ import { Container } from '@/components/container'
 import { useMutation } from '@tanstack/react-query'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter, useParams } from 'next/navigation'
-import { Map } from '@/components/map'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 
+const Map = dynamic(() => import('@/components/map'), {
+  ssr: false,
+})
 // Skema validasi dengan Zod
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Nama kantor minimal 2 karakter.' }),
